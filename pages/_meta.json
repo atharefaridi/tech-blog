@@ -1,15 +1,22 @@
 {
   "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
-  "about": {
-    "title": "About",
-    "type": "page"
-  },
-  "contact": {
-    "title": "Contact ↗",
+  "dotnetcore": ".Net Core",
+  "Facebook": {
+    "title": "Facebook ↗",
     "type": "page",
-    "href": "https://twitter.com/shuding_",
+    "href": "https://www.facebook.com/athar.faridi/",
+    "newWindow": true
+  },
+  "Instagram": {
+    "title": "Instagram ↗",
+    "type": "page",
+    "href": "https://www.instagram.com/atharrazafaridi/",
+    "newWindow": true
+  },
+  "LinkedIn": {
+    "title": "LinkedIn ↗",
+    "type": "page",
+    "href": "https://www.linkedin.com/in/atharfaridi",
     "newWindow": true
   }
 }
