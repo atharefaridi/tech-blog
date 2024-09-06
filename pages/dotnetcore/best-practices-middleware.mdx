@@ -1,0 +1,201 @@
+## What’s is the best Practices to Create a Middleware in ASP.NET Core ? (With Examples)
+Creating middleware in ASP.NET Core involves specific practices tailored to the ASP.NET Core framework. Middleware in ASP.NET Core is used to handle requests and responses in a pipeline, allowing you to process HTTP requests and responses in a modular way. Here are some best practices for creating and using middleware in ASP.NET Core:
+
+### 1. **Understand Middleware Order**
+   - **Best Practice:** Middleware is executed in the order it’s added to the request pipeline. Ensure that middleware is added in the correct order to maintain proper functionality.
+   - **Example:**
+     ```csharp
+     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+     {
+         app.Use(async (context, next) =>
+         {
+             // Log request
+             await next.Invoke();
+         });
+
+         app.Use(async (context, next) =>
+         {
+             // Authentication logic
+             await next.Invoke();
+         });
+
+         app.UseMvc(); // Endpoint routing
+     }
+     ```
+
+### 2. **Use Middleware for Cross-Cutting Concerns**
+   - **Best Practice:** Use middleware to handle concerns that affect multiple parts of the application, such as logging, authentication, and error handling.
+   - **Example:**
+     ```csharp
+     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+     {
+         // Custom Error Handling Middleware
+         app.UseExceptionHandler("/Home/Error");
+
+         // Custom Logging Middleware
+         app.Use(async (context, next) =>
+         {
+             // Logging request
+             await next.Invoke();
+             // Logging response
+         });
+
+         app.UseStaticFiles(); // Serves static files
+         app.UseMvc(routes =>
+         {
+             routes.MapRoute(
+                 name: "default",
+                 template: "{controller=Home}/{action=Index}/{id?}");
+         });
+     }
+     ```
+
+### 3. **Implement Middleware with Short-Circuiting**
+   - **Best Practice:** Use middleware to short-circuit the request pipeline when appropriate, e.g., for authentication or authorization.
+   - **Example:**
+     ```csharp
+     public class AuthenticationMiddleware
+     {
+         private readonly RequestDelegate _next;
+
+         public AuthenticationMiddleware(RequestDelegate next)
+         {
+             _next = next;
+         }
+
+         public async Task Invoke(HttpContext context)
+         {
+             if (context.User.Identity.IsAuthenticated)
+             {
+                 await _next(context); // User is authenticated, proceed
+             }
+             else
+             {
+                 context.Response.StatusCode = 401; // Unauthorized
+             }
+         }
+     }
+
+     public void Configure(IApplicationBuilder app)
+     {
+         app.UseMiddleware<AuthenticationMiddleware>();
+         app.UseMvc();
+     }
+     ```
+
+### 4. **Create Middleware Extensions**
+   - **Best Practice:** Create extension methods for middleware to improve readability and reuse.
+   - **Example:**
+     ```csharp
+     public static class CustomMiddlewareExtensions
+     {
+         public static IApplicationBuilder UseCustomMiddleware(this IApplicationBuilder builder)
+         {
+             return builder.UseMiddleware<CustomMiddleware>();
+         }
+     }
+
+     public class CustomMiddleware
+     {
+         private readonly RequestDelegate _next;
+
+         public CustomMiddleware(RequestDelegate next)
+         {
+             _next = next;
+         }
+
+         public async Task Invoke(HttpContext context)
+         {
+             // Custom logic
+             await _next(context);
+         }
+     }
+
+     public void Configure(IApplicationBuilder app)
+     {
+         app.UseCustomMiddleware();
+         app.UseMvc();
+     }
+     ```
+
+### 5. **Handle Exceptions Properly**
+   - **Best Practice:** Use exception handling middleware to catch and handle exceptions globally.
+   - **Example:**
+     ```csharp
+     public class Startup
+     {
+         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+         {
+             if (env.IsDevelopment())
+             {
+                 app.UseDeveloperExceptionPage();
+             }
+             else
+             {
+                 app.UseExceptionHandler("/Home/Error");
+                 app.UseHsts();
+             }
+
+             app.UseHttpsRedirection();
+             app.UseStaticFiles();
+             app.UseRouting();
+             app.UseAuthorization();
+             app.UseEndpoints(endpoints =>
+             {
+                 endpoints.MapControllerRoute(
+                     name: "default",
+                     pattern: "{controller=Home}/{action=Index}/{id?}");
+             });
+         }
+     }
+     ```
+
+### 6. **Ensure Middleware is Stateless**
+   - **Best Practice:** Middleware should be stateless, avoiding reliance on shared mutable state that could lead to issues in concurrent environments.
+   - **Example:**
+     ```csharp
+     public class StatelessMiddleware
+     {
+         private readonly RequestDelegate _next;
+
+         public StatelessMiddleware(RequestDelegate next)
+         {
+             _next = next;
+         }
+
+         public async Task Invoke(HttpContext context)
+         {
+             // Middleware logic
+             await _next(context);
+         }
+     }
+     ```
+
+### 7. **Document and Test Middleware**
+   - **Best Practice:** Document the purpose and usage of middleware and write unit tests to ensure it behaves as expected.
+   - **Example:** Use comments to explain middleware functionality and write unit tests for custom middleware.
+
+   ```csharp
+   public class CustomMiddlewareTests
+   {
+       [Fact]
+       public async Task Middleware_Should_Do_Something()
+       {
+           // Arrange
+           var middleware = new CustomMiddleware(next: (innerHttpContext) =>
+           {
+               return Task.CompletedTask;
+           });
+
+           var context = new DefaultHttpContext();
+
+           // Act
+           await middleware.Invoke(context);
+
+           // Assert
+           // Verify middleware behavior
+       }
+   }
+   ```
+
+By adhering to these best practices, you ensure that your middleware is effective, maintainable, and well-integrated into the ASP.NET Core request pipeline.

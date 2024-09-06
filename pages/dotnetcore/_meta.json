@@ -3,5 +3,18 @@
   "corevsclassic":"ASP.NET Core VS ASP.NET",
   "coreapivsaspapi":"Core API VS ASP.NET API",
   "middleware":"Middleware ",
-  "building-middleware":"Building Middleware "
+  "building-middleware":"Building Middleware ",
+   "best-practices-middleware":"Best Practices Middleware ",
+   "testing-middleware":"Testing Middleware ",
+   "debugging-middleware":"Debugging Middleware",
+   "asynch-middleware":"Asynch Middleware",
+   "ordering-middleware":"Ordering Middleware",
+   "global-error-handling":"Global Error Handling",
+    "startup-class":"Startup Class",
+    "aspnetcore-mvc-vs-aspnetcore-api":"Core MVC vs Core APIs",
+     "taghelpers":"Tag Helpers",
+     "dependency-injection":"Dependency Injection",
+     "service-lifetime-di":"Service Lifetime of DI",
+     "routing":"Routing",
+     "routing-constraints" :"Custom Routing Constraints"
 }

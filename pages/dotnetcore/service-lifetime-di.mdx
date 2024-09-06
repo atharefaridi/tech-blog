@@ -1,0 +1,176 @@
+## What is the Service Lifetime differences in Dependency Injection in ASP.Net Core? 
+In ASP.NET Core, dependency injection (DI) is used to manage the lifecycle of services through different service lifetimes: Transient, Scoped, and Singleton. Each lifetime has specific characteristics that determine how and when services are created and disposed of. Understanding these differences helps in making the right choice for various application scenarios.
+
+### **Service Lifetimes**
+
+1. **Transient**
+2. **Scoped**
+3. **Singleton**
+
+### **1. Transient Lifetime**
+
+**Technical Description:**
+- **Scope:** Transient services are created each time they are requested. They are short-lived and typically used for lightweight, stateless services.
+- **Use Case:** Services that do not maintain any state between requests and can be easily recreated.
+
+**Example:**
+
+```csharp
+public interface IMessageService
+{
+    string GetMessage();
+}
+
+public class MessageService : IMessageService
+{
+    public string GetMessage() => "Hello from Transient service!";
+}
+
+public class HomeController : Controller
+{
+    private readonly IMessageService _messageService;
+
+    public HomeController(IMessageService messageService)
+    {
+        _messageService = messageService;
+    }
+
+    public IActionResult Index()
+    {
+        var message = _messageService.GetMessage();
+        return Content(message);
+    }
+}
+```
+
+**Registration in `Startup.cs`:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddTransient<IMessageService, MessageService>();
+}
+```
+
+**Real-Life Analogy:**
+Imagine a coffee shop where each customer gets a fresh cup of coffee every time they order. Each cup of coffee is created new for every customer, just like a transient service is created anew with each request.
+
+### **2. Scoped Lifetime**
+
+**Technical Description:**
+- **Scope:** Scoped services are created once per request (or per scope). They are suitable for services that need to maintain state within a single request but should be discarded afterwards.
+- **Use Case:** Services that need to share data within a single request, such as database contexts.
+
+**Example:**
+
+```csharp
+public interface ICartService
+{
+    void AddItem(string item);
+    IEnumerable<string> GetItems();
+}
+
+public class CartService : ICartService
+{
+    private readonly List<string> _items = new List<string>();
+
+    public void AddItem(string item) => _items.Add(item);
+    public IEnumerable<string> GetItems() => _items;
+}
+
+public class CartController : Controller
+{
+    private readonly ICartService _cartService;
+
+    public CartController(ICartService cartService)
+    {
+        _cartService = cartService;
+    }
+
+    public IActionResult Add(string item)
+    {
+        _cartService.AddItem(item);
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Index()
+    {
+        var items = _cartService.GetItems();
+        return View(items);
+    }
+}
+```
+
+**Registration in `Startup.cs`:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddScoped<ICartService, CartService>();
+}
+```
+
+**Real-Life Analogy:**
+Consider a shopping cart at a physical store. As you move through the store, the cart follows you and collects items. Once you check out, the cart is cleared. This is similar to a scoped service that maintains state within a single request but is discarded afterward.
+
+### **3. Singleton Lifetime**
+
+**Technical Description:**
+- **Scope:** Singleton services are created once and shared throughout the application's lifetime. They are ideal for services that are expensive to create or that need to maintain a global state.
+- **Use Case:** Services that require shared state or need to perform actions only once, such as configuration providers or logging services.
+
+**Example:**
+
+```csharp
+public interface ILoggingService
+{
+    void Log(string message);
+}
+
+public class LoggingService : ILoggingService
+{
+    public void Log(string message)
+    {
+        // Logging implementation
+        Console.WriteLine(message);
+    }
+}
+
+public class HomeController : Controller
+{
+    private readonly ILoggingService _loggingService;
+
+    public HomeController(ILoggingService loggingService)
+    {
+        _loggingService = loggingService;
+    }
+
+    public IActionResult Index()
+    {
+        _loggingService.Log("Index action called");
+        return View();
+    }
+}
+```
+
+**Registration in `Startup.cs`:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSingleton<ILoggingService, LoggingService>();
+}
+```
+
+**Real-Life Analogy:**
+Think of a company CEO. The CEO is a single person who oversees the entire organization and makes high-level decisions. Regardless of how many departments or branches exist, there is only one CEO. This is similar to a singleton service, which is instantiated only once and shared across the application.
+
+### **Choosing the Right Lifetime**
+
+- **Transient:** Use for lightweight, stateless services. Ideal when each operation needs a new instance.
+- **Scoped:** Use for services that maintain state within a request but should be disposed of at the end of the request. Ideal for operations that require a shared state within a request, such as database contexts.
+- **Singleton:** Use for services that need to be shared across the entire application and have a global state. Ideal for expensive-to-create services or services with a global state.
+
+### **Conclusion**
+
+Understanding the different service lifetimes in ASP.NET Core’s dependency injection helps you to design your application with appropriate resource management and service sharing. Transient, scoped, and singleton lifetimes each have their specific use cases and impacts on application behavior and performance. By selecting the right lifetime for your services, you ensure that your application remains efficient, maintainable, and scalable.

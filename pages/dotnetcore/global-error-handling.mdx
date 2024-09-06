@@ -1,0 +1,211 @@
+## How to do Global Error Handling in ASP.Net Core?
+Global error handling in ASP.NET Core ensures that exceptions are managed consistently across your entire application, providing a centralized place to handle errors, log them, and return appropriate responses to clients. Here’s how to set up global error handling using various techniques:
+
+### 1. **Using the Developer Exception Page**
+
+The Developer Exception Page provides detailed error information during development. It should only be used in development environments due to the sensitive information it may reveal.
+
+#### **Example: Configuring Developer Exception Page**
+
+In your `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        // Configure exception handling for production
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    // Other middleware registrations
+}
+```
+
+### 2. **Using Exception Handling Middleware**
+
+ASP.NET Core provides the `UseExceptionHandler` middleware, which allows you to handle exceptions globally and redirect to a custom error page or handle errors inline.
+
+#### **Example: Redirecting to a Custom Error Page**
+
+In your `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        // Global error handling
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    // Other middleware registrations
+}
+```
+
+Create an `Error` action in your `HomeController`:
+
+```csharp
+public class HomeController : Controller
+{
+    [Route("Home/Error")]
+    public IActionResult Error()
+    {
+        return View();
+    }
+}
+```
+
+Create an `Error.cshtml` view under `Views/Home` to display the error message.
+
+### 3. **Using Custom Middleware for Global Error Handling**
+
+You can also create custom middleware to handle exceptions globally, allowing for more control over how errors are managed.
+
+#### **Example: Custom Error Handling Middleware**
+
+Create a middleware class for handling exceptions:
+
+```csharp
+public class CustomExceptionMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger<CustomExceptionMiddleware> _logger;
+
+    public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred.");
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            var errorResponse = new { message = "An unexpected error occurred. Please try again later." };
+            await context.Response.WriteAsJsonAsync(errorResponse);
+        }
+    }
+}
+```
+
+Register the custom middleware in `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseMiddleware<CustomExceptionMiddleware>();
+
+    // Other middleware registrations
+}
+```
+
+### 4. **Using Exception Filters**
+
+Exception filters are used to handle exceptions that occur in MVC controllers and actions. They provide a way to handle exceptions in a more granular way compared to middleware.
+
+#### **Example: Custom Exception Filter**
+
+Create a custom exception filter:
+
+```csharp
+public class CustomExceptionFilter : IExceptionFilter
+{
+    private readonly ILogger<CustomExceptionFilter> _logger;
+
+    public CustomExceptionFilter(ILogger<CustomExceptionFilter> logger)
+    {
+        _logger = logger;
+    }
+
+    public void OnException(ExceptionContext context)
+    {
+        _logger.LogError(context.Exception, "An error occurred while processing the request.");
+        context.Result = new ObjectResult(new
+        {
+            message = "An error occurred. Please try again later."
+        })
+        {
+            StatusCode = (int)HttpStatusCode.InternalServerError
+        };
+    }
+}
+```
+
+Register the exception filter globally in `Startup.cs`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllersWithViews(options =>
+    {
+        options.Filters.Add<CustomExceptionFilter>();
+    });
+}
+```
+
+### 5. **Using Built-in `ProblemDetails` for Error Responses**
+
+ASP.NET Core provides a standardized way to format error responses using `ProblemDetails`, which conforms to the RFC 7807 standard.
+
+#### **Example: Using `ProblemDetails`**
+
+Modify the `CustomExceptionMiddleware` to use `ProblemDetails`:
+
+```csharp
+public class CustomExceptionMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger<CustomExceptionMiddleware> _logger;
+
+    public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred.");
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var problemDetails = new ProblemDetails
+            {
+                Title = "An unexpected error occurred.",
+                Status = context.Response.StatusCode,
+                Detail = "Please contact support if the problem persists."
+            };
+
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
+    }
+}
+```
+
+### Conclusion
+
+Global error handling in ASP.NET Core helps ensure that errors are managed consistently, providing a user-friendly response and logging error details for troubleshooting. Depending on your requirements, you can use the Developer Exception Page for development, configure global exception handling middleware, implement custom error handling middleware, use exception filters, or leverage the `ProblemDetails` standard for error responses.

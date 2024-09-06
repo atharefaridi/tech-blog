@@ -1,0 +1,248 @@
+## Give an Examples of Asynch Middleware? 
+Asynchronous middleware in ASP.NET Core allows for non-blocking operations during request processing. This is especially useful for operations that involve I/O-bound tasks, such as querying a database, calling external services, or performing network operations.
+
+Here are a few examples of asynchronous middleware to illustrate how you can implement and use them:
+
+### 1. **Asynchronous Logging Middleware**
+
+This middleware logs the request and response times asynchronously. It's useful for monitoring and debugging request processing times.
+
+#### **Example: Asynchronous Logging Middleware**
+
+```csharp
+public class AsyncLoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger<AsyncLoggingMiddleware> _logger;
+
+    public AsyncLoggingMiddleware(RequestDelegate next, ILogger<AsyncLoggingMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var startTime = DateTime.UtcNow;
+        
+        // Log request details
+        _logger.LogInformation("Request started: {Method} {Url}", context.Request.Method, context.Request.Path);
+        
+        // Call the next middleware in the pipeline
+        await _next(context);
+
+        var endTime = DateTime.UtcNow;
+        var duration = endTime - startTime;
+
+        // Log response details
+        _logger.LogInformation("Request finished: {Method} {Url} with status code {StatusCode} in {Duration}ms",
+            context.Request.Method,
+            context.Request.Path,
+            context.Response.StatusCode,
+            duration.TotalMilliseconds);
+    }
+}
+```
+
+#### **Usage**
+
+Add this middleware to your pipeline in `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseMiddleware<AsyncLoggingMiddleware>();
+    // Other middleware
+}
+```
+
+### 2. **Asynchronous Cache Middleware**
+
+This middleware checks if a cached version of the response exists and serves it asynchronously. If not, it processes the request and caches the response.
+
+#### **Example: Asynchronous Cache Middleware**
+
+```csharp
+public class AsyncCacheMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly IMemoryCache _cache;
+
+    public AsyncCacheMiddleware(RequestDelegate next, IMemoryCache cache)
+    {
+        _next = next;
+        _cache = cache;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var cacheKey = context.Request.Path.ToString();
+        if (_cache.TryGetValue(cacheKey, out var cachedResponse))
+        {
+            // Serve cached response
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync((string)cachedResponse);
+            return;
+        }
+
+        // Capture the original body stream
+        var originalBodyStream = context.Response.Body;
+
+        // Create a new memory stream to hold the response
+        using (var memoryStream = new MemoryStream())
+        {
+            context.Response.Body = memoryStream;
+
+            // Call the next middleware
+            await _next(context);
+
+            // Reset the stream position to the beginning
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            // Read the response from the memory stream
+            var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
+
+            // Cache the response
+            _cache.Set(cacheKey, responseBody, TimeSpan.FromMinutes(5));
+
+            // Write the response to the original body stream
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            await memoryStream.CopyToAsync(originalBodyStream);
+        }
+    }
+}
+```
+
+#### **Usage**
+
+Configure caching services and add the middleware in `Startup.cs`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMemoryCache();
+    // Other services
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseMiddleware<AsyncCacheMiddleware>();
+    // Other middleware
+}
+```
+
+### 3. **Asynchronous External API Call Middleware**
+
+This middleware makes an asynchronous call to an external API and includes the API response in the HTTP response.
+
+#### **Example: Asynchronous External API Call Middleware**
+
+```csharp
+public class ExternalApiMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly HttpClient _httpClient;
+
+    public ExternalApiMiddleware(RequestDelegate next, HttpClient httpClient)
+    {
+        _next = next;
+        _httpClient = httpClient;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        if (context.Request.Path.StartsWithSegments("/api/data"))
+        {
+            var apiResponse = await _httpClient.GetStringAsync("https://api.example.com/data");
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(apiResponse);
+            return;
+        }
+
+        await _next(context);
+    }
+}
+```
+
+#### **Usage**
+
+Configure `HttpClient` and add the middleware in `Startup.cs`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddHttpClient();
+    // Other services
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseMiddleware<ExternalApiMiddleware>();
+    // Other middleware
+}
+```
+
+### 4. **Asynchronous Authentication Middleware**
+
+This middleware performs asynchronous authentication checks, for example, querying a user database.
+
+#### **Example: Asynchronous Authentication Middleware**
+
+```csharp
+public class AsyncAuthenticationMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly IUserService _userService;
+
+    public AsyncAuthenticationMiddleware(RequestDelegate next, IUserService userService)
+    {
+        _next = next;
+        _userService = userService;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var token = context.Request.Headers["Authorization"].ToString();
+        
+        if (string.IsNullOrEmpty(token))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized");
+            return;
+        }
+
+        var user = await _userService.AuthenticateAsync(token);
+        if (user == null)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized");
+            return;
+        }
+
+        // Attach user information to the context
+        context.Items["User"] = user;
+
+        await _next(context);
+    }
+}
+```
+
+#### **Usage**
+
+Configure `IUserService` and add the middleware in `Startup.cs`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddScoped<IUserService, UserService>();
+    // Other services
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.UseMiddleware<AsyncAuthenticationMiddleware>();
+    // Other middleware
+}
+```
+
+These examples demonstrate how to implement asynchronous middleware to handle various scenarios in ASP.NET Core. Each example highlights the use of `await` to perform non-blocking operations, which can improve the efficiency and responsiveness of your application.

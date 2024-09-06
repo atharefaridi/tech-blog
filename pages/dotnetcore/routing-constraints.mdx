@@ -1,0 +1,260 @@
+## What is Custom route constraints ? 
+Custom route constraints in ASP.NET Core allow you to create more granular and specific rules for routing by defining your own conditions for matching URLs. These constraints provide additional validation to ensure that routes are matched only if certain criteria are met.
+
+### **1. Overview of Custom Route Constraints**
+
+**Custom route constraints** are used to impose specific conditions on route parameters, such as ensuring that a parameter meets certain criteria (e.g., a specific format, range, or set of values). This helps in providing more precise control over how URLs are matched to routes.
+
+### **2. Creating a Custom Route Constraint**
+
+To create a custom route constraint, you need to implement the `IRouteConstraint` interface. This interface defines a `Match` method that contains the logic for the constraint.
+
+**Example:**
+
+**Custom Route Constraint Implementation**
+
+Let's create a custom route constraint that only matches routes where a parameter is a valid GUID (Globally Unique Identifier).
+
+**Custom GUID Constraint:**
+
+```csharp
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using System;
+
+public class GuidRouteConstraint : IRouteConstraint
+{
+    public bool Match(HttpContext httpContext, 
+                      IRouter router, 
+                      string routeKey, 
+                      RouteValueDictionary values, 
+                      RouteDirection routeDirection)
+    {
+        if (values.TryGetValue(routeKey, out var value))
+        {
+            return Guid.TryParse(value?.ToString(), out _);
+        }
+        return false;
+    }
+}
+```
+
+**Registering the Custom Route Constraint**
+
+You need to register the custom constraint in the route configuration.
+
+**Startup.cs Configuration:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouting(options => 
+    {
+        options.ConstraintMap.Add("guid", typeof(GuidRouteConstraint));
+    });
+
+    services.AddControllersWithViews();
+}
+```
+
+**Using the Custom Route Constraint in a Route**
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "guidRoute",
+            pattern: "products/details/{id:guid}",
+            defaults: new { controller = "Products", action = "Details" });
+    });
+}
+```
+
+In this configuration, the route will only match if the `id` parameter is a valid GUID.
+
+### **3. Real-Life Analogy**
+
+**Custom Route Constraints** can be compared to specific rules you might have when admitting guests to a VIP event. Suppose there are conditions that guests must meet, such as having a special invitation code. Only those who have the correct code are allowed to enter. Similarly, custom route constraints ensure that only requests that meet specific criteria are matched to particular routes.
+
+### **4. Additional Examples of Custom Route Constraints**
+
+**Example 1: Range Constraint**
+
+Create a route constraint to ensure that a parameter value is within a certain numeric range.
+
+**Range Constraint Implementation:**
+
+```csharp
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+
+public class RangeRouteConstraint : IRouteConstraint
+{
+    private readonly int _min;
+    private readonly int _max;
+
+    public RangeRouteConstraint(int min, int max)
+    {
+        _min = min;
+        _max = max;
+    }
+
+    public bool Match(HttpContext httpContext, 
+                      IRouter router, 
+                      string routeKey, 
+                      RouteValueDictionary values, 
+                      RouteDirection routeDirection)
+    {
+        if (values.TryGetValue(routeKey, out var value))
+        {
+            if (int.TryParse(value?.ToString(), out int intValue))
+            {
+                return intValue >= _min && intValue <= _max;
+            }
+        }
+        return false;
+    }
+}
+```
+
+**Register and Use Range Constraint:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouting(options => 
+    {
+        options.ConstraintMap.Add("range", typeof(RangeRouteConstraint));
+    });
+
+    services.AddControllersWithViews();
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "rangeRoute",
+            pattern: "products/{id:range(1,100)}",
+            defaults: new { controller = "Products", action = "Details" });
+    });
+}
+```
+
+In this example, the route only matches if the `id` is between 1 and 100.
+
+**Example 2: Custom Format Constraint**
+
+Create a route constraint to ensure that a parameter follows a specific format, such as a date in "yyyy-MM-dd" format.
+
+**Date Format Constraint Implementation:**
+
+```csharp
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using System;
+using System.Globalization;
+
+public class DateFormatRouteConstraint : IRouteConstraint
+{
+    public bool Match(HttpContext httpContext, 
+                      IRouter router, 
+                      string routeKey, 
+                      RouteValueDictionary values, 
+                      RouteDirection routeDirection)
+    {
+        if (values.TryGetValue(routeKey, out var value))
+        {
+            return DateTime.TryParseExact(value?.ToString(), "yyyy-MM-dd", 
+                                          CultureInfo.InvariantCulture, 
+                                          DateTimeStyles.None, out _);
+        }
+        return false;
+    }
+}
+```
+
+**Register and Use Date Format Constraint:**
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouting(options => 
+    {
+        options.ConstraintMap.Add("dateformat", typeof(DateFormatRouteConstraint));
+    });
+
+    services.AddControllersWithViews();
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "dateFormatRoute",
+            pattern: "events/{date:dateformat(yyyy-MM-dd)}",
+            defaults: new { controller = "Events", action = "Details" });
+    });
+}
+```
+
+In this example, the route only matches if the `date` parameter is in the "yyyy-MM-dd" format.
+
+### **5. Conclusion**
+
+Custom route constraints in ASP.NET Core provide powerful tools for validating and controlling the routing process based on specific criteria. By implementing and applying custom constraints, you can ensure that your application routes requests only under precise conditions, leading to more robust and predictable routing behavior. These constraints are analogous to real-life systems where specific rules or formats must be met for processing or access, ensuring that only valid and relevant data is handled.

@@ -1,0 +1,189 @@
+## Describe Dependency Injection in ASP.NET Core?
+Dependency Injection (DI) is a core design pattern and feature in ASP.NET Core that promotes loose coupling, testability, and maintainability by injecting dependencies into classes rather than having those classes create their own dependencies. It is a key component of ASP.NET Core's framework, making it easier to manage the application's services and dependencies.
+
+### **1. Overview of Dependency Injection**
+
+In Dependency Injection, dependencies are provided to a class rather than the class creating the dependencies itself. This is done through constructor injection, method injection, or property injection. ASP.NET Core uses a built-in DI container to manage the lifecycle and resolution of services.
+
+### **2. Key Concepts**
+
+**a. Service Registration:**
+- **Transient:** Services are created each time they are requested. They are suitable for lightweight, stateless services.
+- **Scoped:** Services are created once per request (or per scope). They are typically used for services that require a context, such as database contexts.
+- **Singleton:** Services are created once and shared throughout the application's lifetime. They are used for services that are expensive to create and do not depend on request-specific data.
+
+**b. Service Resolution:**
+- The DI container resolves and injects the required dependencies into classes that request them.
+
+### **3. Configuring Dependency Injection**
+
+**a. Registering Services**
+
+In the `Startup` class, you register services in the `ConfigureServices` method. This method is called by the runtime during application startup.
+
+**Example:**
+
+```csharp
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Registering a transient service
+        services.AddTransient<IEmailService, EmailService>();
+
+        // Registering a scoped service
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        // Registering a singleton service
+        services.AddSingleton<ILoggingService, LoggingService>();
+
+        services.AddControllersWithViews();
+    }
+}
+```
+
+**b. Injecting Services**
+
+Services are injected into classes through their constructors. ASP.NET Core's DI container automatically resolves and provides the required dependencies.
+
+**Example:**
+
+```csharp
+public class HomeController : Controller
+{
+    private readonly IEmailService _emailService;
+
+    public HomeController(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+
+    public IActionResult Index()
+    {
+        _emailService.SendEmail("recipient@example.com", "Subject", "Message body");
+        return View();
+    }
+}
+```
+
+In this example, `IEmailService` is injected into the `HomeController`, and its implementation (`EmailService`) is provided by the DI container.
+
+### **4. Dependency Injection in ASP.NET Core**
+
+**a. Constructor Injection**
+
+This is the most common form of dependency injection. Dependencies are provided through the constructor of the class.
+
+**Example:**
+
+```csharp
+public interface IGreetingService
+{
+    string GetGreeting();
+}
+
+public class GreetingService : IGreetingService
+{
+    public string GetGreeting() => "Hello, World!";
+}
+
+public class GreetingController : Controller
+{
+    private readonly IGreetingService _greetingService;
+
+    public GreetingController(IGreetingService greetingService)
+    {
+        _greetingService = greetingService;
+    }
+
+    public IActionResult Index()
+    {
+        var greeting = _greetingService.GetGreeting();
+        return Content(greeting);
+    }
+}
+```
+
+**b. Method Injection**
+
+Dependencies can also be injected into methods, typically used in situations where the dependency is not always required.
+
+**Example:**
+
+```csharp
+public class MathController : Controller
+{
+    public IActionResult Add([FromServices] IMathService mathService, int a, int b)
+    {
+        var result = mathService.Add(a, b);
+        return Content($"Result: {result}");
+    }
+}
+```
+
+**c. Property Injection**
+
+Property injection is less common and generally not recommended for most scenarios, but it can be used for optional dependencies.
+
+**Example:**
+
+```csharp
+public class HomeController : Controller
+{
+    public ILoggingService LoggingService { get; set; }
+
+    public IActionResult Index()
+    {
+        LoggingService?.Log("Index action called");
+        return View();
+    }
+}
+```
+
+### **5. Using Dependency Injection in Middleware**
+
+Middleware can also leverage DI. Services are injected into the middleware's constructor.
+
+**Example:**
+
+```csharp
+public class RequestLoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILoggingService _loggingService;
+
+    public RequestLoggingMiddleware(RequestDelegate next, ILoggingService loggingService)
+    {
+        _next = next;
+        _loggingService = loggingService;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        _loggingService.Log($"Request: {context.Request.Method} {context.Request.Path}");
+        await _next(context);
+    }
+}
+```
+
+Register the middleware in `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseMiddleware<RequestLoggingMiddleware>();
+
+    // Other middleware registrations
+}
+```
+
+### **6. Benefits of Dependency Injection**
+
+- **Loose Coupling:** Reduces dependencies between components by providing dependencies from the outside.
+- **Testability:** Makes it easier to substitute mock or stub implementations of services for unit testing.
+- **Maintainability:** Encourages separation of concerns and single responsibility principles, making the code easier to maintain and extend.
+- **Configuration Management:** Simplifies the management of configurations and service lifetimes.
+
+### **7. Conclusion**
+
+Dependency Injection in ASP.NET Core simplifies the management of service lifetimes and dependencies, promotes better design practices, and enhances testability. By leveraging the built-in DI container, you can create maintainable and scalable applications, manage dependencies efficiently, and adhere to SOLID principles.
