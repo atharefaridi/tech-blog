@@ -1,0 +1,144 @@
+## The difference between ASP.NET CORE APIs vs ASP.NET WEB APIs
+
+### **ASP.NET Core APIs vs. ASP.NET Web APIs**  
+ASP.NET Core APIs and ASP.NET Web APIs are both frameworks for building web APIs, but they are built on different platforms with key differences in architecture, performance, and development experience. Let's explore their distinctions:
+
+---
+
+### **1. Platform and Framework**
+
+- **ASP.NET Web API**:
+  - Built on the full **.NET Framework**.
+  - Typically used for building APIs on Windows.
+  - Uses **System.Web.dll**, which can add extra overhead.
+
+- **ASP.NET Core API**:
+  - Built on the **.NET Core** platform, which is cross-platform (supports Windows, Linux, and macOS).
+  - More lightweight and modular. Does not depend on `System.Web.dll`, leading to better performance and lower memory usage.
+  - Unifies the framework for building APIs and MVC web applications.
+
+---
+
+### **2. Performance**
+
+- **ASP.NET Web API**:
+  - Due to its dependency on the full .NET Framework and `System.Web`, it tends to have higher memory usage and lower performance compared to ASP.NET Core.
+  
+- **ASP.NET Core API**:
+  - **Better performance** due to the removal of the heavy `System.Web` dependency and other optimizations.
+  - Optimized for modern cloud-native applications and microservices architecture.
+
+---
+
+### **3. Cross-Platform Support**
+
+- **ASP.NET Web API**:
+  - Designed for Windows environments only since it runs on the .NET Framework.
+
+- **ASP.NET Core API**:
+  - **Cross-platform** by design, allowing you to develop and deploy on Windows, Linux, and macOS.
+  - This makes ASP.NET Core suitable for containerization with Docker, Kubernetes, and cloud-native environments.
+
+---
+
+### **4. Hosting Model**
+
+- **ASP.NET Web API**:
+  - Traditionally hosted in **IIS** (Internet Information Services).
+  - You could also self-host it using OWIN (Open Web Interface for .NET), but it requires additional configuration.
+
+- **ASP.NET Core API**:
+  - More flexible. Can be hosted on **IIS**, **Kestrel** (the default lightweight web server), or any custom hosting solution.
+  - Can be easily integrated with containerization tools like Docker for deployment on cloud platforms like AWS, Azure, or GCP.
+
+---
+
+### **5. Dependency Injection (DI)**
+
+- **ASP.NET Web API**:
+  - Although dependency injection is possible, it's not built-in. You need to use third-party libraries like Ninject or Autofac to implement DI.
+
+- **ASP.NET Core API**:
+  - **Built-in Dependency Injection** is a first-class citizen in ASP.NET Core. It provides a simple and powerful way to register services and inject dependencies into your classes.
+
+---
+
+### **6. Middleware Pipeline**
+
+- **ASP.NET Web API**:
+  - Uses an **HttpModule** and **HttpHandler** pipeline that is complex and harder to customize.
+  
+- **ASP.NET Core API**:
+  - ASP.NET Core uses a flexible, **lightweight middleware pipeline** that can be customized easily by adding or removing components like authentication, logging, error handling, etc.
+  - This middleware model enables you to control every aspect of the request and response cycle, improving extensibility and performance.
+
+---
+
+### **7. Unified Framework**
+
+- **ASP.NET Web API**:
+  - Separate from ASP.NET MVC. Web API and MVC were different frameworks, and developers often had to use them together, making it complex to maintain.
+  
+- **ASP.NET Core API**:
+  - **Unified framework** that combines **MVC** and **Web API** into a single application model. Both API endpoints and MVC pages/controllers are handled in the same project, which simplifies development and reduces code duplication.
+
+---
+
+### **8. Versioning and Support**
+
+- **ASP.NET Web API**:
+  - ASP.NET Web API was last updated with ASP.NET 4.x, and it does not receive active development as it's a legacy technology.
+  
+- **ASP.NET Core API**:
+  - Actively developed and supported by Microsoft.
+  - Frequent updates and improvements, and it is the future of ASP.NET development.
+
+---
+
+### **Example of Code Difference**
+
+Here’s a simple comparison of controller definitions in ASP.NET Web API vs. ASP.NET Core API:
+
+**ASP.NET Web API:**
+```csharp
+public class ProductsController : ApiController
+{
+    public IHttpActionResult Get()
+    {
+        return Ok(new string[] { "Product1", "Product2" });
+    }
+}
+```
+
+**ASP.NET Core API:**
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
+{
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
+    {
+        return new string[] { "Product1", "Product2" };
+    }
+}
+```
+
+### **Summary of Key Differences:**
+
+| Feature                        | ASP.NET Web API                         | ASP.NET Core API                   |
+|---------------------------------|-----------------------------------------|------------------------------------|
+| **Platform**                    | .NET Framework (Windows)                | Cross-platform (.NET Core)         |
+| **Performance**                 | Higher overhead, slower                 | Lightweight, optimized for speed   |
+| **Cross-Platform Support**      | Windows only                            | Cross-platform (Windows, Linux, macOS) |
+| **Hosting**                     | Primarily IIS                           | IIS, Kestrel, Docker, etc.         |
+| **Dependency Injection**        | Third-party libraries needed            | Built-in DI                        |
+| **Middleware**                  | Complex HttpModule/HttpHandler pipeline | Flexible middleware-based pipeline |
+| **MVC and API Separation**      | Separate frameworks                     | Unified framework (MVC + API)      |
+| **Future Support**              | Legacy                                  | Actively supported and evolving    |
+
+---
+
+### **Conclusion**
+
+ASP.NET Core API is a modern, fast, cross-platform, and unified framework that offers better performance, flexibility, and simplicity compared to the older ASP.NET Web API. It’s suitable for building high-performance, cloud-native applications, while ASP.NET Web API is considered legacy and is more suited to Windows-only environments.

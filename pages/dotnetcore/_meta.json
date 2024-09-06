@@ -1,4 +1,7 @@
 {  
   "index": "Key Concept" ,
-  "corevsclassic":"ASP.NET Core VS ASP.NET"
+  "corevsclassic":"ASP.NET Core VS ASP.NET",
+  "coreapivsaspapi":"Core API VS ASP.NET API",
+  "middleware":"Middleware ",
+  "building-middleware":"Building Middleware "
 }
