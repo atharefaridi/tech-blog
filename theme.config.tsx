@@ -7,7 +7,7 @@ const config: DocsThemeConfig = {
     link: 'https://github.com/atharefaridi',
   },
   chat: {
-    link: 'https://discord.com',
+    link: 'https://wa.me/351933442044',
   },
   docsRepositoryBase: 'https://github.com/atharefaridi',
   footer: {
