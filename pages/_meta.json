@@ -1,7 +1,11 @@
 {
   "index": "Introduction",
   "dotnetcore": ".Net Core",
-  "Facebook": {
+"company": {
+   "title": "Follow me",
+   "type": "menu",
+   "items": {
+     "Facebook": {
     "title": "Facebook ↗",
     "type": "page",
     "href": "https://www.facebook.com/athar.faridi/",
@@ -19,4 +23,7 @@
     "href": "https://www.linkedin.com/in/atharfaridi",
     "newWindow": true
   }
+   }
+ }
 }
+
