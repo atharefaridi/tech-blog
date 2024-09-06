@@ -1,0 +1,236 @@
+## Best way to increase the performance of Routing? 
+Optimizing routing performance in ASP.NET Core can significantly enhance the overall responsiveness and efficiency of your application. Here are some strategies and best practices to increase routing performance:
+
+### **1. Use Route Caching**
+
+**Route Caching** helps improve performance by storing the route information in memory, reducing the overhead of route processing for each request.
+
+**Example:**
+
+In ASP.NET Core, routing is cached by default. However, ensure you're using it effectively:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRouting(options => 
+    {
+        options.LowercaseUrls = true;  // This can help with URL normalization
+    });
+
+    services.AddControllersWithViews();
+}
+```
+
+**Note:** Route caching is enabled by default, so if you're using built-in routing features, they are already cached.
+
+### **2. Optimize Route Patterns**
+
+**Route Patterns** should be designed to minimize complexity and improve matching speed. Avoid overly complex or broad patterns.
+
+**Best Practices:**
+
+- Use specific route patterns rather than generic ones.
+- Avoid overly broad patterns that could lead to multiple potential matches.
+- Use attribute routing for more granular control.
+
+**Example:**
+
+Instead of using a broad pattern like `"{controller}/{action}/{id?}"`, define more specific routes:
+
+```csharp
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "productDetails",
+        pattern: "products/details/{id:int}",
+        defaults: new { controller = "Products", action = "Details" });
+
+    endpoints.MapControllerRoute(
+        name: "home",
+        pattern: "home/index",
+        defaults: new { controller = "Home", action = "Index" });
+});
+```
+
+### **3. Use Endpoint Routing**
+
+**Endpoint Routing** is a more efficient routing system introduced in ASP.NET Core 3.0 that improves performance by separating route matching from endpoint execution.
+
+**Example:**
+
+Ensure you're using endpoint routing in your `Startup.cs`:
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseRouting();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+    });
+}
+```
+
+### **4. Minimize Middleware Overhead**
+
+**Middleware Overhead** can affect routing performance, especially if middleware components are not efficiently handling requests.
+
+**Best Practices:**
+
+- Place routing-related middleware early in the pipeline to avoid unnecessary processing.
+- Avoid using heavy or complex middleware that could slow down routing.
+
+**Example:**
+
+Ensure routing is placed before other middleware that could potentially add overhead:
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    // Middleware for authorization or authentication
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+    });
+}
+```
+
+### **5. Optimize Route Constraints**
+
+**Route Constraints** should be used efficiently to avoid unnecessary processing.
+
+**Best Practices:**
+
+- Use constraints only when necessary to reduce the complexity of route matching.
+- Implement efficient custom route constraints.
+
+**Example:**
+
+Ensure custom constraints are optimized for performance:
+
+```csharp
+public class RangeRouteConstraint : IRouteConstraint
+{
+    private readonly int _min;
+    private readonly int _max;
+
+    public RangeRouteConstraint(int min, int max)
+    {
+        _min = min;
+        _max = max;
+    }
+
+    public bool Match(HttpContext httpContext, 
+                      IRouter router, 
+                      string routeKey, 
+                      RouteValueDictionary values, 
+                      RouteDirection routeDirection)
+    {
+        if (values.TryGetValue(routeKey, out var value))
+        {
+            return int.TryParse(value?.ToString(), out int intValue) &&
+                   intValue >= _min && intValue <= _max;
+        }
+        return false;
+    }
+}
+```
+
+### **6. Use Route Precedence**
+
+**Route Precedence** allows you to define the priority of routes to improve matching efficiency.
+
+**Best Practices:**
+
+- Define more specific routes before general ones to ensure accurate matches.
+- Use route ordering to optimize how routes are evaluated.
+
+**Example:**
+
+Define specific routes first:
+
+```csharp
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    app.UseRouting();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "productDetails",
+            pattern: "products/details/{id:int}",
+            defaults: new { controller = "Products", action = "Details" });
+
+        endpoints.MapControllerRoute(
+            name: "home",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+    });
+}
+```
+
+### **7. Use Attribute Routing**
+
+**Attribute Routing** allows for more granular control over routing and can be more efficient for complex routing scenarios.
+
+**Example:**
+
+Define routes directly on controller actions:
+
+```csharp
+[Route("products")]
+public class ProductsController : Controller
+{
+    [HttpGet("details/{id}")]
+    public IActionResult Details(int id)
+    {
+        // Handle the request
+        return View();
+    }
+
+    [HttpGet("list")]
+    public IActionResult List()
+    {
+        // Handle the request
+        return View();
+    }
+}
+```
+
+### **8. Profiling and Monitoring**
+
+**Profiling and Monitoring** your application helps identify routing bottlenecks and areas for improvement.
+
+**Best Practices:**
+
+- Use profiling tools to analyze routing performance.
+- Monitor application logs for routing issues or performance concerns.
+
+**Example:**
+
+Use Application Insights or other performance monitoring tools to track routing metrics and optimize accordingly.
+
+### **Conclusion**
+
+By implementing these strategies and best practices, you can significantly enhance the performance of routing in your ASP.NET Core applications. Effective route management, minimizing middleware overhead, and optimizing route patterns and constraints are key factors in achieving high-performance routing. Regular profiling and monitoring also play an essential role in identifying and addressing performance issues.

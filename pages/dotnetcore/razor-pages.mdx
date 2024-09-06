@@ -1,0 +1,125 @@
+## What is Razor Pages in ASP.NET Core? Give Examples
+Razor Pages is a feature in ASP.NET Core that simplifies the development of web applications by providing a more streamlined approach to building dynamic web pages. It focuses on the page-based programming model, where each page is associated with its own code and view, improving the separation of concerns and making it easier to manage.
+
+### **1. Overview of Razor Pages**
+
+Razor Pages:
+
+- **Page-Based Model:** Each Razor Page (.cshtml file) is associated with a code-behind file (.cshtml.cs), making it straightforward to handle both the UI and logic for individual pages.
+- **Single Responsibility:** Each page handles its own requests and logic, promoting a clear separation of concerns.
+- **Simplified Routing:** Razor Pages uses a convention-based routing system where the URL pattern is derived from the page’s file path.
+
+### **2. Structure of Razor Pages**
+
+A Razor Page typically consists of:
+
+- **.cshtml file:** The HTML markup and Razor syntax.
+- **.cshtml.cs file:** The PageModel class containing the page's logic and handlers.
+
+**Example:**
+
+Suppose you want to create a simple contact page. Here's how you can do it using Razor Pages.
+
+#### **Creating a Razor Page**
+
+1. **Add a Razor Page**
+
+   Create a new Razor Page called `Contact` in the `Pages` folder of your ASP.NET Core project.
+
+   - **Contact.cshtml:** The view file
+
+     ```html
+     @page
+     @model MyApp.Pages.ContactModel
+     @{
+         ViewData["Title"] = "Contact";
+     }
+
+     <h2>@ViewData["Title"]</h2>
+
+     <form method="post">
+         <div class="form-group">
+             <label for="Name">Name</label>
+             <input type="text" id="Name" name="Name" class="form-control" />
+         </div>
+         <div class="form-group">
+             <label for="Message">Message</label>
+             <textarea id="Message" name="Message" class="form-control"></textarea>
+         </div>
+         <button type="submit" class="btn btn-primary">Send</button>
+     </form>
+     ```
+
+   - **Contact.cshtml.cs:** The PageModel class
+
+     ```csharp
+     using Microsoft.AspNetCore.Mvc;
+     using Microsoft.AspNetCore.Mvc.RazorPages;
+     using System.ComponentModel.DataAnnotations;
+
+     namespace MyApp.Pages
+     {
+         public class ContactModel : PageModel
+         {
+             [BindProperty]
+             [Required]
+             public string Name { get; set; }
+
+             [BindProperty]
+             [Required]
+             public string Message { get; set; }
+
+             public void OnGet()
+             {
+                 // Initialization or data retrieval for GET request
+             }
+
+             public IActionResult OnPost()
+             {
+                 if (!ModelState.IsValid)
+                 {
+                     return Page(); // Re-display the page if validation fails
+                 }
+
+                 // Process the form submission
+                 // For example, send an email or save the message
+
+                 return RedirectToPage("Success"); // Redirect to a success page
+             }
+         }
+     }
+     ```
+
+2. **Add Routing**
+
+   In Razor Pages, routing is handled automatically based on the file structure in the `Pages` folder. The `Contact` page will be accessible at `/Contact`.
+
+#### **Directory Structure:**
+
+```
+Pages/
+    Contact.cshtml
+    Contact.cshtml.cs
+    Success.cshtml
+    Success.cshtml.cs
+```
+
+### **3. Key Concepts in Razor Pages**
+
+- **PageModel Class:** Represents the code-behind for the Razor Page and handles requests. It can include properties, methods, and handlers (e.g., `OnGet()`, `OnPost()`, etc.).
+- **Handlers:** Methods in the PageModel that handle different HTTP verbs (e.g., `OnGet()`, `OnPost()`, `OnPut()`, etc.).
+- **Routing:** Automatically derived from the file path. For example, `Contact.cshtml` is routed to `/Contact`.
+
+### **4. Real-Life Analogy**
+
+Imagine Razor Pages like having a personal diary where each page (entry) contains both your thoughts (content) and your notes on what you plan to do (actions). Each diary page is self-contained, making it easy to read and write without having to refer to separate documents or complex systems. Similarly, Razor Pages keeps the logic and presentation together for each page, making development and maintenance simpler and more organized.
+
+### **5. Advantages of Razor Pages**
+
+- **Simplified Model:** The page-based approach is more straightforward than MVC for applications with mostly static or form-based interactions.
+- **Reduced Complexity:** Handles UI and logic together, reducing the need for separate controller classes.
+- **Better Organization:** Encourages better organization of page-specific logic and views.
+
+### **6. Conclusion**
+
+Razor Pages in ASP.NET Core provide a simplified and efficient way to build dynamic web pages by combining the view and logic in a single unit. This approach is particularly useful for applications where pages have specific functionalities and need a more straightforward handling of data and interactions. With its page-based model and automatic routing, Razor Pages streamline web development, making it easier to manage and maintain web applications.

@@ -16,5 +16,7 @@
      "dependency-injection":"Dependency Injection",
      "service-lifetime-di":"Service Lifetime of DI",
      "routing":"Routing",
-     "routing-constraints" :"Custom Routing Constraints"
+     "routing-constraints" :"Custom Routing Constraints",
+     "optimizing-routing":"Optimizing Routing",
+     "razor-pages":"Razor Pages"
 }
