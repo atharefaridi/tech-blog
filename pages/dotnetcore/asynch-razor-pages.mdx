@@ -1,0 +1,214 @@
+## What are asynch Razor Pages ?
+### **Asynchronous Razor Pages in ASP.NET Core**
+
+**Asynchronous Razor Pages** refer to Razor Pages that execute asynchronous operations, such as accessing databases, calling external services, or performing long-running tasks, without blocking the server's main thread. This approach improves the scalability and performance of web applications, particularly in scenarios with high I/O operations like network calls or file system access.
+
+Using asynchronous methods in Razor Pages allows the application to handle more concurrent requests by freeing up the thread to process other requests while waiting for a long-running operation to complete.
+
+### **1. Why Use Asynchronous Razor Pages?**
+
+- **Non-Blocking I/O:** When performing tasks such as database calls or external API requests, asynchronous methods prevent the application from waiting (blocking) for the task to finish.
+- **Improved Scalability:** Asynchronous code enables the application to serve more concurrent requests since threads are not blocked, improving overall scalability.
+- **Better User Experience:** Asynchronous pages can improve responsiveness, ensuring users don't experience delays when loading data or performing background operations.
+
+### **2. Asynchronous Programming Model in Razor Pages**
+
+In Razor Pages, you can use the `async` and `await` keywords in your PageModel class to make methods asynchronous. For example, if you are retrieving data from a database or an external API, you would use asynchronous methods to perform the I/O-bound operations.
+
+### **3. Example of an Asynchronous Razor Page**
+
+#### **Scenario:**
+Let’s assume we need to load a list of products from a database asynchronously when the user visits a Razor Page.
+
+#### **Step 1: Create the Razor Page**
+
+1. **Products.cshtml (View)**
+
+```html
+@page
+@model MyApp.Pages.ProductsModel
+@{
+    ViewData["Title"] = "Product List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<ul>
+    @if (Model.Products != null)
+    {
+        foreach (var product in Model.Products)
+        {
+            <li>@product.Name - @product.Price.ToString("C")</li>
+        }
+    }
+    else
+    {
+        <li>Loading products...</li>
+    }
+</ul>
+```
+
+2. **Products.cshtml.cs (PageModel)**
+
+```csharp
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using MyApp.Data;
+using MyApp.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace MyApp.Pages
+{
+    public class ProductsModel : PageModel
+    {
+        private readonly IProductService _productService;
+
+        public List<Product> Products { get; set; }
+
+        public ProductsModel(IProductService productService)
+        {
+            _productService = productService;
+        }
+
+        // Asynchronous handler for the GET request
+        public async Task OnGetAsync()
+        {
+            // Calling an asynchronous method to fetch the product data
+            Products = await _productService.GetProductsAsync();
+        }
+    }
+}
+```
+
+#### **Step 2: Asynchronous Service Layer**
+
+Assume we have a service that retrieves data from a database or external source asynchronously.
+
+```csharp
+using MyApp.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace MyApp.Data
+{
+    public interface IProductService
+    {
+        Task<List<Product>> GetProductsAsync();
+    }
+
+    public class ProductService : IProductService
+    {
+        private readonly MyAppDbContext _context;
+
+        public ProductService(MyAppDbContext context)
+        {
+            _context = context;
+        }
+
+        // This method uses Entity Framework Core's async methods to fetch data
+        public async Task<List<Product>> GetProductsAsync()
+        {
+            return await _context.Products.ToListAsync();
+        }
+    }
+}
+```
+
+Here, `GetProductsAsync` is an asynchronous method that fetches the product list from the database using Entity Framework Core's `ToListAsync` method.
+
+#### **Step 3: Register Service in Startup.cs**
+
+To ensure that the service is available, register it in `Startup.cs`:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddRazorPages();
+    services.AddScoped<IProductService, ProductService>();
+}
+```
+
+### **4. Real-Life Analogy**
+
+Imagine you're at a restaurant, and you order food. Instead of the chef preparing your food while making you wait at the counter, the chef sends you back to your seat and starts preparing your meal. Meanwhile, the chef can handle orders from other customers. When the meal is ready, the chef notifies you, and you can enjoy your meal.
+
+In the same way, asynchronous programming allows the application to handle other requests while waiting for data (like a database query) to be fetched, making the system more responsive and efficient.
+
+### **5. Key Points to Remember**
+
+- **Async Handlers in Razor Pages:** You can use asynchronous handlers (`OnGetAsync`, `OnPostAsync`, etc.) in Razor Pages to perform non-blocking operations.
+- **Non-blocking I/O:** Asynchronous Razor Pages are useful when you're performing I/O-bound tasks like database access, file operations, or API calls.
+- **Performance and Scalability:** Async methods can handle more concurrent requests, making the application more scalable.
+
+### **6. Full Example: Async Data Fetching in Razor Pages**
+
+```csharp
+// PageModel
+public class ProductsModel : PageModel
+{
+    private readonly IProductService _productService;
+
+    public List<Product> Products { get; set; }
+
+    public ProductsModel(IProductService productService)
+    {
+        _productService = productService;
+    }
+
+    public async Task OnGetAsync()
+    {
+        // Fetching data asynchronously
+        Products = await _productService.GetProductsAsync();
+    }
+}
+
+// Razor Page View
+@page
+@model MyApp.Pages.ProductsModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<ul>
+    @if (Model.Products != null)
+    {
+        foreach (var product in Model.Products)
+        {
+            <li>@product.Name - @product.Price.ToString("C")</li>
+        }
+    }
+    else
+    {
+        <li>Loading...</li>
+    }
+</ul>
+
+// Service Layer
+public class ProductService : IProductService
+{
+    private readonly MyAppDbContext _context;
+
+    public ProductService(MyAppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<List<Product>> GetProductsAsync()
+    {
+        // Using async method for database access
+        return await _context.Products.ToListAsync();
+    }
+}
+```
+
+### **7. Benefits of Asynchronous Razor Pages**
+
+- **Improved Performance:** The server can handle more requests because threads are not waiting for I/O operations.
+- **Responsiveness:** Pages load faster, and the application remains responsive even when performing long-running operations.
+- **Resource Efficiency:** Async programming allows the server to allocate resources more efficiently, improving scalability.
+
+### **Conclusion**
+
+Asynchronous Razor Pages are crucial for creating efficient, scalable web applications in ASP.NET Core, especially when performing I/O-bound operations like database access or calling external APIs. By leveraging async methods, developers can build responsive applications that handle a high number of concurrent requests without blocking threads, improving both performance and user experience.

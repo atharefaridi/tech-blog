@@ -18,5 +18,8 @@
      "routing":"Routing",
      "routing-constraints" :"Custom Routing Constraints",
      "optimizing-routing":"Optimizing Routing",
-     "razor-pages":"Razor Pages"
+     "razor-pages":"Razor Pages",
+     "asynch-razor-pages":"Asynch Razor Pages",
+     "asynch-database-operation":"Asynch Database Operations",
+     "testing-asynch-code":"Testing Asynch Code"
 }
