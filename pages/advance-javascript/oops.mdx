@@ -1,0 +1,229 @@
+## What are the object oriented features supported in ES6
+ES6 (ECMAScript 2015) introduced several features that enhance the support for object-oriented programming (OOP) in JavaScript. Here are the main OOP features supported in ES6:
+
+### 1. **Classes (`class`)**
+   ES6 introduced the `class` keyword, which provides a more concise and clear way to create constructor functions and work with prototypes. Although JavaScript's class syntax is syntactical sugar over its existing prototype-based inheritance, it brings a more traditional object-oriented structure to the language.
+
+   **Example:**
+   ```javascript
+   class Person {
+     constructor(name, age) {
+       this.name = name;
+       this.age = age;
+     }
+
+     greet() {
+       return `Hello, my name is ${this.name}.`;
+     }
+   }
+
+   const person1 = new Person("John", 30);
+   console.log(person1.greet()); // Hello, my name is John.
+   ```
+
+### 2. **Class Inheritance (`extends` and `super`)**
+   ES6 supports inheritance between classes using the `extends` keyword. The `super()` function is used to call the parent class constructor and its methods.
+
+   **Example:**
+   ```javascript
+   class Animal {
+     constructor(name) {
+       this.name = name;
+     }
+
+     speak() {
+       return `${this.name} makes a noise.`;
+     }
+   }
+
+   class Dog extends Animal {
+     constructor(name, breed) {
+       super(name); // Calls the parent constructor
+       this.breed = breed;
+     }
+
+     speak() {
+       return `${this.name} barks.`;
+     }
+   }
+
+   const dog = new Dog("Buddy", "Golden Retriever");
+   console.log(dog.speak()); // Buddy barks.
+   ```
+
+### 3. **Constructor Method**
+   In ES6, the `constructor` method is a special method for creating and initializing an object instance when the `new` keyword is used. Each class can define its own constructor.
+
+   **Example:**
+   ```javascript
+   class Car {
+     constructor(model, year) {
+       this.model = model;
+       this.year = year;
+     }
+   }
+
+   const myCar = new Car("Tesla", 2022);
+   console.log(myCar.model); // Tesla
+   ```
+
+### 4. **Getters and Setters (`get` and `set`)**
+   ES6 allows defining **getter** and **setter** methods in classes. These provide more control over how object properties are accessed or modified.
+
+   **Example:**
+   ```javascript
+   class Rectangle {
+     constructor(width, height) {
+       this.width = width;
+       this.height = height;
+     }
+
+     get area() {
+       return this.width * this.height;
+     }
+
+     set setWidth(newWidth) {
+       if (newWidth > 0) {
+         this.width = newWidth;
+       }
+     }
+   }
+
+   const rect = new Rectangle(5, 10);
+   console.log(rect.area); // 50
+   rect.setWidth = 7;
+   console.log(rect.area); // 70
+   ```
+
+### 5. **Static Methods (`static`)**
+   The `static` keyword defines methods that belong to the class itself rather than to instances of the class. These methods can be called on the class directly.
+
+   **Example:**
+   ```javascript
+   class MathHelper {
+     static add(a, b) {
+       return a + b;
+     }
+   }
+
+   console.log(MathHelper.add(5, 3)); // 8
+   ```
+
+### 6. **Inheritance of Built-in Objects**
+   ES6 allows classes to extend built-in objects like `Array`, `Date`, and `Error`. This means you can create subclasses from built-in constructors.
+
+   **Example:**
+   ```javascript
+   class MyArray extends Array {
+     customMethod() {
+       return this.join(' - ');
+     }
+   }
+
+   const arr = new MyArray();
+   arr.push(1, 2, 3);
+   console.log(arr.customMethod()); // 1 - 2 - 3
+   ```
+
+### 7. **Symbol (`Symbol`) for Private Properties**
+   While not truly private, symbols in ES6 can be used to create properties that are harder to access or accidentally overwrite because symbols are unique and not easily iterable.
+
+   **Example:**
+   ```javascript
+   const privateProperty = Symbol('private');
+
+   class MyClass {
+     constructor() {
+       this[privateProperty] = 'This is private';
+     }
+
+     getPrivate() {
+       return this[privateProperty];
+     }
+   }
+
+   const obj = new MyClass();
+   console.log(obj.getPrivate()); // This is private
+   console.log(obj.privateProperty); // undefined
+   ```
+
+### 8. **Subclassing and Super Constructors**
+   ES6 allows more flexible subclassing by enabling direct access to the parent class's constructor using the `super()` keyword, making it easier to build hierarchies of classes.
+
+   **Example:**
+   ```javascript
+   class Shape {
+     constructor(name) {
+       this.name = name;
+     }
+   }
+
+   class Circle extends Shape {
+     constructor(radius) {
+       super('Circle');
+       this.radius = radius;
+     }
+   }
+
+   const circle = new Circle(5);
+   console.log(circle.name); // Circle
+   console.log(circle.radius); // 5
+   ```
+
+### 9. **Method Shorthand Syntax**
+   ES6 introduced shorthand syntax for defining methods in classes and objects.
+
+   **Example:**
+   ```javascript
+   class Person {
+     constructor(name) {
+       this.name = name;
+     }
+
+     greet() {
+       return `Hello, ${this.name}`;
+     }
+   }
+
+   const person = new Person('Alice');
+   console.log(person.greet()); // Hello, Alice
+   ```
+
+### 10. **Modules (`import`/`export`)**
+   ES6 introduced a module system that allows exporting and importing code between files. While not a traditional OOP feature, modules allow for better encapsulation and organization of classes and objects.
+
+   **Example:**
+   ```javascript
+   // myModule.js
+   export class User {
+     constructor(name) {
+       this.name = name;
+     }
+
+     greet() {
+       return `Hello, ${this.name}`;
+     }
+   }
+
+   // main.js
+   import { User } from './myModule';
+
+   const user = new User('Alice');
+   console.log(user.greet()); // Hello, Alice
+   ```
+
+---
+
+### Summary of ES6 OOP Features:
+1. **Classes**: Cleaner and clearer syntax for constructor functions.
+2. **Class Inheritance**: Extending classes using `extends` and `super()`.
+3. **Constructor Method**: Special method for initializing class instances.
+4. **Getters and Setters**: Define custom logic for reading and writing properties.
+5. **Static Methods**: Methods that belong to the class, not the instance.
+6. **Inheritance of Built-in Objects**: Extend native objects like `Array`.
+7. **Symbols for Private Properties**: Unique, unenumerable property keys.
+8. **Subclassing with `super`**: Calling parent class constructors and methods.
+9. **Method Shorthand Syntax**: Cleaner method definitions.
+10. **Modules**: Better encapsulation with `import`/`export`.
+
+These features bring JavaScript closer to traditional OOP languages, while still leveraging its prototypal inheritance model.

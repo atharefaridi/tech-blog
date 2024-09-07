@@ -1,0 +1,253 @@
+## OOPS the Old way (Javascript) vs New way(ES6)
+### Object-Oriented Features Supported in ES6
+
+ECMAScript 6 (ES6) introduced several new features that make JavaScript more object-oriented and help structure code in a way that resembles classical object-oriented languages like Java, C++, and Python. Key object-oriented features introduced in ES6 include:
+
+### 1. **Classes**
+   - **ES6:** JavaScript now supports classes, which is syntactic sugar over JavaScript's existing prototype-based inheritance model. It allows developers to define classes and inheritance more intuitively.
+   
+   ```javascript
+   class Animal {
+     constructor(name) {
+       this.name = name;
+     }
+     
+     speak() {
+       console.log(`${this.name} makes a noise.`);
+     }
+   }
+
+   class Dog extends Animal {
+     speak() {
+       console.log(`${this.name} barks.`);
+     }
+   }
+
+   const dog = new Dog('Rex');
+   dog.speak(); // Rex barks.
+   ```
+   - **Old Way (ES5 and before):** Classes in the older versions of JavaScript were created using constructor functions and prototypes for inheritance.
+   
+   ```javascript
+   function Animal(name) {
+     this.name = name;
+   }
+
+   Animal.prototype.speak = function() {
+     console.log(this.name + ' makes a noise.');
+   };
+
+   function Dog(name) {
+     Animal.call(this, name); // Inherit properties
+   }
+
+   Dog.prototype = Object.create(Animal.prototype); // Inherit methods
+   Dog.prototype.speak = function() {
+     console.log(this.name + ' barks.');
+   };
+
+   const dog = new Dog('Rex');
+   dog.speak(); // Rex barks.
+   ```
+
+### 2. **Class Inheritance (extends)**
+   - **ES6:** ES6 introduced the `extends` keyword, allowing easier inheritance between classes, both for methods and properties. It handles method overriding, and the `super` keyword can be used to call the parent class's constructor and methods.
+   ```javascript
+   class Bird extends Animal {
+     constructor(name, color) {
+       super(name); // Call the parent constructor
+       this.color = color;
+     }
+
+     fly() {
+       console.log(`${this.name} is flying!`);
+     }
+   }
+   ```
+   - **Old Way:** In ES5, inheritance was handled using prototype chaining or `Object.create`, and calling parent constructors required manually invoking them using `call()` or `apply()`.
+   ```javascript
+   function Bird(name, color) {
+     Animal.call(this, name); // Call the parent constructor
+     this.color = color;
+   }
+   Bird.prototype = Object.create(Animal.prototype);
+   ```
+
+### 3. **`super` Keyword**
+   - **ES6:** The `super` keyword allows access to methods and constructors of the parent class, making inheritance much simpler.
+   ```javascript
+   class Cat extends Animal {
+     constructor(name) {
+       super(name); // Call parent class constructor
+     }
+
+     speak() {
+       super.speak(); // Call parent class method
+       console.log(`${this.name} meows.`);
+     }
+   }
+   ```
+   - **Old Way:** Without `super`, you had to manually invoke parent class constructors using `call()` or `apply()`, and parent methods using `Parent.prototype.methodName.call(this)`.
+   ```javascript
+   Cat.prototype.speak = function() {
+     Animal.prototype.speak.call(this); // Manually call parent method
+     console.log(this.name + ' meows.');
+   };
+   ```
+
+### 4. **Getters and Setters**
+   - **ES6:** ES6 classes support getter and setter methods, making it easier to control access to object properties.
+   ```javascript
+   class Person {
+     constructor(name) {
+       this._name = name;
+     }
+
+     get name() {
+       return this._name;
+     }
+
+     set name(newName) {
+       this._name = newName;
+     }
+   }
+
+   const person = new Person('Alice');
+   console.log(person.name); // Alice
+   person.name = 'Bob'; 
+   console.log(person.name); // Bob
+   ```
+   - **Old Way:** In older versions of JavaScript, you had to manually create getter and setter functions outside of the object.
+   ```javascript
+   function Person(name) {
+     this._name = name;
+   }
+
+   Person.prototype.getName = function() {
+     return this._name;
+   };
+
+   Person.prototype.setName = function(newName) {
+     this._name = newName;
+   };
+   ```
+
+### 5. **Static Methods**
+   - **ES6:** Static methods are methods that belong to the class itself and not to instances of the class. They are called directly on the class, not on the object.
+   ```javascript
+   class MathUtils {
+     static add(a, b) {
+       return a + b;
+     }
+   }
+
+   console.log(MathUtils.add(5, 3)); // 8
+   ```
+   - **Old Way:** In the older approach, static methods would be added directly to the constructor function itself.
+   ```javascript
+   function MathUtils() {}
+
+   MathUtils.add = function(a, b) {
+     return a + b;
+   };
+
+   console.log(MathUtils.add(5, 3)); // 8
+   ```
+
+### 6. **Constructor Method**
+   - **ES6:** The `constructor` method is a special method for creating and initializing an object created with a class. There can only be one `constructor()` method per class.
+   ```javascript
+   class Vehicle {
+     constructor(make, model) {
+       this.make = make;
+       this.model = model;
+     }
+   }
+   ```
+   - **Old Way:** In ES5, constructors were simply functions assigned to the `this` keyword, and no dedicated `constructor` method existed.
+   ```javascript
+   function Vehicle(make, model) {
+     this.make = make;
+     this.model = model;
+   }
+   ```
+
+### 7. **Default Parameters in Constructors**
+   - **ES6:** You can specify default parameter values in constructors and methods directly, making the code more concise.
+   ```javascript
+   class Car {
+     constructor(make = 'Toyota', model = 'Corolla') {
+       this.make = make;
+       this.model = model;
+     }
+   }
+
+   const car = new Car(); // Defaults to Toyota Corolla
+   ```
+   - **Old Way:** Before ES6, default parameter values had to be handled manually in the function body.
+   ```javascript
+   function Car(make, model) {
+     this.make = make || 'Toyota';
+     this.model = model || 'Corolla';
+   }
+   ```
+
+### 8. **Method Definitions in Classes**
+   - **ES6:** Methods in classes can be defined without the `function` keyword.
+   ```javascript
+   class Person {
+     greet() {
+       console.log('Hello!');
+     }
+   }
+   ```
+   - **Old Way:** Methods were added to the constructor's `prototype` property.
+   ```javascript
+   function Person() {}
+
+   Person.prototype.greet = function() {
+     console.log('Hello!');
+   };
+   ```
+
+### 9. **Enhanced Object Literals**
+   - **ES6:** Enhanced object literals make it easier to define object methods and property shorthand within objects.
+   ```javascript
+   const name = 'John';
+   const age = 30;
+
+   const person = {
+     name, // Shorthand for name: name
+     age,
+     greet() { // Method definition without function keyword
+       console.log('Hello!');
+     }
+   };
+   ```
+   - **Old Way:** Object properties and methods needed to be explicitly defined.
+   ```javascript
+   const person = {
+     name: name,
+     age: age,
+     greet: function() {
+       console.log('Hello!');
+     }
+   };
+   ```
+
+### Differences Between ES6 and the Old Way (ES5)
+
+| **Feature**              | **ES6 (Modern JavaScript)**                                   | **Old Way (ES5 and Before)**                             |
+|--------------------------|---------------------------------------------------------------|----------------------------------------------------------|
+| **Classes**               | `class` and `extends` simplify defining and inheriting classes| Constructor functions and prototype-based inheritance     |
+| **Inheritance**           | Inheritance with `extends` and `super`                        | Prototype chaining and `call()`/`apply()` for constructors|
+| **Static Methods**        | `static` keyword to define class-level methods                | Static methods added manually to constructor functions    |
+| **Getters and Setters**   | `get` and `set` keywords for easy property control            | Manually defined getter/setter functions                  |
+| **Constructor**           | `constructor()` method for class initialization               | Function constructors, no dedicated `constructor` method  |
+| **Default Parameters**    | Built-in default parameter support                            | Manually check and assign default values                  |
+| **Object Literals**       | Enhanced object literals with method and property shorthand   | Properties and methods defined explicitly                 |
+| **Method Definitions**    | Methods can be defined directly inside classes                | Methods defined in the prototype                          |
+
+### Conclusion
+
+ES6 made JavaScript more intuitive for object-oriented programming by adding features like classes, inheritance, and static methods. These features are syntactic sugar over JavaScript's existing prototype-based model, but they greatly simplify writing cleaner, more modular, and maintainable code compared to the older ES5 approach.
