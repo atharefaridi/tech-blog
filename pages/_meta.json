@@ -3,7 +3,7 @@
   "advance-javascript":"Advanced JavaScript",
   "blazor":"Blazor",
   "dotnetcore": ".Net Core",
-   "github_link": {
+   "book_call": {
     "title": "Book a Call 🕒",
     "type":"page",
     "href": "https://cal.com/atharfaridi"
@@ -14,29 +14,34 @@
    "type": "menu",
    "items": {
      "GitHub": {
-       "title": "GitHub",
+       "title": "GitHub 🐙",
        "type": "page",
        "href": "https://github.com/atharefaridi",
        "newWindow": true
      },
      "LinkedIn": {
-       "title": "LinkedIn",
+       "title": "LinkedIn 🧑‍💼",
        "type": "page",
        "href": "https://www.linkedin.com/in/atharfaridi",
        "newWindow": true
      },
 
      "Facebook": {
-       "title": "Facebook",
+       "title": "Facebook 📘",
        "type": "page",
        "href": "https://www.facebook.com/athar.faridi/",
        "newWindow": true
      },
      "Instagram": {
-       "title": "Instagram",
+       "title": "Instagram 📷",
        "type": "page",
        "href": "https://www.instagram.com/atharrazafaridi/",
        "newWindow": true
+     },
+     "book_call": {
+       "title": "Book a Call 🕒",
+       "type": "page",
+       "href": "https://cal.com/atharfaridi"
      }
    }
  }
