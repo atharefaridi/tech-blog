@@ -1,13 +1,15 @@
 {
   "index": "Introduction",
   "advance-javascript":"Advanced JavaScript",
+  "blazor":"Blazor",
   "dotnetcore": ".Net Core",
    "github_link": {
     "title": "Book a Call 🕒",
     "type":"page",
     "href": "https://cal.com/atharfaridi"
   },
-"company": {
+"company": 
+{
    "title": "Follow me",
    "type": "menu",
    "items": {
