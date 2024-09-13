@@ -1,50 +1,49 @@
 {
   "index": "Introduction",
-  "advance-javascript":"Advanced JavaScript",
-  "blazor":"Blazor",
   "dotnetcore": ".Net Core",
-   "book_call": {
+  "github": "GitHub",
+  "blazor": "Blazor",
+  "advance-javascript": "Advanced JavaScript",
+  "book_call": {
     "title": "Book a Call 🕒",
-    "type":"page",
+    "type": "page",
     "href": "https://cal.com/atharfaridi"
   },
-  "github":"GitHub",
-"company": 
-{
-   "title": "Follow me",
-   "type": "menu",
-   "items": {
-     "GitHub": {
-       "title": "GitHub 🐙",
-       "type": "page",
-       "href": "https://github.com/atharefaridi",
-       "newWindow": true
-     },
-     "LinkedIn": {
-       "title": "LinkedIn 🧑‍💼",
-       "type": "page",
-       "href": "https://www.linkedin.com/in/atharfaridi",
-       "newWindow": true
-     },
+  "company": {
+    "title": "Follow me",
+    "type": "menu",
+    "items": {
+      "GitHub": {
+        "title": "GitHub 🐙",
+        "type": "page",
+        "href": "https://github.com/atharefaridi",
+        "newWindow": true
+      },
+      "LinkedIn": {
+        "title": "LinkedIn 🧑‍💼",
+        "type": "page",
+        "href": "https://www.linkedin.com/in/atharfaridi",
+        "newWindow": true
+      },
 
-     "Facebook": {
-       "title": "Facebook 📘",
-       "type": "page",
-       "href": "https://www.facebook.com/athar.faridi/",
-       "newWindow": true
-     },
-     "Instagram": {
-       "title": "Instagram 📷",
-       "type": "page",
-       "href": "https://www.instagram.com/atharrazafaridi/",
-       "newWindow": true
-     },
-     "book_call": {
-       "title": "Book a Call 🕒",
-       "type": "page",
-       "href": "https://cal.com/atharfaridi"
-     }
-   }
- }
+      "Facebook": {
+        "title": "Facebook 📘",
+        "type": "page",
+        "href": "https://www.facebook.com/athar.faridi/",
+        "newWindow": true
+      },
+      "Instagram": {
+        "title": "Instagram 📷",
+        "type": "page",
+        "href": "https://www.instagram.com/atharrazafaridi/",
+        "newWindow": true
+      },
+      "book_call": {
+        "title": "Book a Call 🕒",
+        "type": "page",
+        "href": "https://cal.com/atharfaridi"
+      }
+    }
+  }
 }
 
