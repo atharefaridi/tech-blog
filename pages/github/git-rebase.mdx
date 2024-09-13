@@ -1,0 +1,73 @@
+### What's git rebase?
+### **What is Git Rebase?**
+
+`git rebase` is a command that integrates changes from one branch into another in a **linear** history, unlike `git merge`, which results in a **non-linear** history. It is often used to keep a clean and readable project history by avoiding unnecessary merge commits.
+
+### **How Does Git Rebase Work?**
+
+When you use `git rebase`, Git moves or re-applies your commits **on top of another base commit**. This is often done by "rebasing" your feature branch onto the main branch to integrate the latest changes, but without creating a new merge commit.
+
+### **Basic Rebase Workflow:**
+
+#### 1. **Switch to the feature branch** (the one you want to rebase):
+```bash
+git checkout <feature-branch>
+```
+
+#### 2. **Rebase your feature branch onto the main branch:**
+```bash
+git rebase main
+```
+
+- This takes all the commits on your feature branch and re-applies them on top of the latest commit from the `main` branch.
+
+#### 3. **Handle any conflicts** (if they arise):
+- Git will pause rebasing if there are conflicts. Resolve the conflicts manually, then continue:
+```bash
+git add <resolved-file>
+git rebase --continue
+```
+
+#### 4. **Push your rebased branch** (with the `--force` option):
+- Since `git rebase` rewrites commit history, you may need to force push your branch:
+```bash
+git push --force
+```
+
+### **Advantages of Git Rebase:**
+
+- **Clean History**: Rebasing avoids creating a merge commit, so the project history is linear and easier to read.
+- **Better Collaboration**: When working on a feature branch, rebasing can ensure your branch is up-to-date with the latest changes without cluttering the history.
+
+### **When to Use Git Rebase:**
+
+- **Before merging** a feature branch into `main`, you can rebase it on top of the latest `main` commits to keep the history clean.
+- **When collaborating**: If multiple people are working on the same project, rebasing can help avoid a tangled history.
+
+### **When to Avoid Git Rebase:**
+
+- **On shared branches**: If other developers are working on the same branch, rebasing can cause confusion because it rewrites commit history.
+- **If you prefer a detailed history**: Merging shows the true sequence of events, whereas rebasing reorders commits to appear more linear.
+
+### **Example:**
+
+Let's say you have the following history:
+
+```
+A---B---C (main)
+     \
+      D---E (feature)
+```
+
+After running `git rebase main` on your `feature` branch, the history will look like this:
+
+```
+A---B---C---D'---E' (feature)
+```
+
+Now the commits from `feature` are "rebased" on top of `main`, and commits `D` and `E` become `D'` and `E'`, representing their new versions after rebasing.
+
+### **Summary:**
+- `git rebase` helps you reapply commits on top of a different base commit, giving you a linear and clean commit history.
+- It’s useful for keeping branches up-to-date and avoiding unnecessary merge commits.
+- Always avoid rebasing branches that are already shared with others to prevent issues.

@@ -1,0 +1,145 @@
+### Difference between merge and rebase
+### **Git Merge vs Git Rebase: Key Differences**
+
+Both `git merge` and `git rebase` are used to integrate changes from one branch into another, but they handle the process very differently. Understanding their differences helps you decide which one to use based on your project needs.
+
+---
+
+### **1. History Structure:**
+
+- **`git merge`**:
+  - **Non-linear** history: `git merge` combines two branches by creating a **merge commit**, which ties the histories of both branches together.
+  - It retains the original sequence of commits and creates a **merge commit**.
+  
+  **Example:**
+  ```
+  A---B---C (main)
+       \   
+        D---E (feature)
+  
+  git merge feature ->
+
+  A---B---C---M (merge commit)
+               / \
+            D---E (feature)
+  ```
+
+- **`git rebase`**:
+  - **Linear** history: `git rebase` moves or "replays" your branch’s commits on top of another branch. It avoids creating a merge commit and rewrites commit history.
+  - The commits from the feature branch are applied on top of the latest `main` commits, making the history appear linear and clean.
+
+  **Example:**
+  ```
+  A---B---C (main)
+       \   
+        D---E (feature)
+
+  git rebase main ->
+
+  A---B---C---D'---E' (feature)
+  ```
+
+---
+
+### **2. Commit History:**
+
+- **`git merge`**:
+  - **Preserves the original history** of both branches, showing exactly when branches were created and merged.
+  - Ideal if you want a **detailed history** that reflects exactly what happened, including all branches and merges.
+  
+  **Pros**:
+  - Maintains a complete, true history of development.
+  - Easier for complex projects with multiple collaborators.
+
+  **Cons**:
+  - Can result in a **messy commit history** with many unnecessary merge commits if used frequently.
+
+- **`git rebase`**:
+  - **Rewrites history** to make it linear, with no indication of when branches diverged or were merged.
+  - Ideal for projects where a **clean, streamlined history** is more important than tracking every detail of when branches diverged.
+
+  **Pros**:
+  - Cleaner and easier-to-read history.
+  - Great for long-lived branches like feature branches that need to stay updated.
+
+  **Cons**:
+  - **Rewrites history** (especially if used on shared branches), which can lead to confusion or errors when others have pulled the original branch.
+
+---
+
+### **3. Conflict Resolution:**
+
+- **`git merge`**:
+  - If there are conflicts, you resolve them once when merging the two branches, and the merge commit records that resolution.
+  
+  **Example**:
+  - After resolving conflicts:
+    ```
+    A---B---C---M (merge commit)
+                 / \
+              D---E
+    ```
+
+- **`git rebase`**:
+  - You may need to resolve conflicts **multiple times** if the rebase involves several commits.
+  - After each conflict is resolved, you continue rebasing.
+
+  **Example**:
+  - If conflicts arise at each commit, you resolve each one, then:
+    ```
+    A---B---C---D'---E'
+    ```
+
+---
+
+### **4. When to Use Merge vs Rebase:**
+
+- **Use `git merge` when:**
+  - You want to preserve a **complete history** of how development occurred.
+  - You are working on a **shared branch** that other collaborators are also working on.
+  - You are doing a **final merge** of a feature branch into `main` and want to record that event in the history.
+  
+  **Common Scenario**:
+  - Finalizing a feature branch into `main`:
+    ```bash
+    git checkout main
+    git merge feature
+    ```
+
+- **Use `git rebase` when:**
+  - You want to **keep your feature branch up to date** with the latest changes in `main` without introducing merge commits.
+  - You prefer a **linear history** without the clutter of merge commits.
+  - You’re working **alone** or with branches that have not yet been pushed/shared.
+
+  **Common Scenario**:
+  - Rebasing your feature branch onto `main` to keep it up-to-date:
+    ```bash
+    git checkout feature
+    git rebase main
+    ```
+
+---
+
+### **5. Risk of Rewriting History:**
+
+- **`git merge`**:
+  - Safe for **public/shared branches** because it does not rewrite history.
+  
+- **`git rebase`**:
+  - **Dangerous for shared branches**: Rewriting commit history in a branch that others have cloned can cause confusion and conflict. This is why you should **never rebase a branch that has been shared** publicly.
+
+---
+
+### **Summary Table**:
+
+| **Aspect**         | **Git Merge**                                 | **Git Rebase**                              |
+|--------------------|-----------------------------------------------|---------------------------------------------|
+| **History Type**    | Non-linear, with merge commits                | Linear, no merge commits                    |
+| **Commit History**  | Preserves history, including merge commits    | Rewrites history, makes it linear           |
+| **Conflict Handling**| Single conflict resolution at the merge point| Resolve conflicts commit-by-commit          |
+| **When to Use**     | Final merges, working on shared branches      | Keeping feature branches updated, clean history |
+| **Risk**            | No risk of history rewrite                   | Can rewrite history (dangerous for shared branches) |
+
+### **Conclusion:**
+- Use `**git merge**` when you want to keep a complete history with all merges explicitly recorded.
+- Use `**git rebase**` when you want to clean up your history, especially on feature branches before merging into the main branch.
