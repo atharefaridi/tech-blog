@@ -17,6 +17,9 @@ const config: DocsThemeConfig = {
     text: "2016-2024 ©atharfaridi",
   },
   docsRepositoryBase:"https://github.com/atharefaridi/tech-blog/tree/main",
+ sidebar:{
+ defaultMenuCollapseLevel:1
+ } 
   
 };
 
