@@ -1,5 +1,7 @@
 {
     "index":"GitHub Basic Commands",
     "git-rebase":"Git rebase",
-    "merge-vs-rebase":"Merge vs Rebase"
+    "merge-vs-rebase":"Merge vs Rebase",
+    "fetch-vs-pull":"Fetch vs Pull",
+    "common-errors-git":"Common Errors & Solutions"
 }

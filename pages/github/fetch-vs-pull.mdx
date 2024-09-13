@@ -1,0 +1,98 @@
+### Fetch vs Pull
+### **Difference Between `git fetch` and `git pull`**
+
+Both `git fetch` and `git pull` are used to retrieve updates from a remote repository, but they behave differently in terms of how they apply the updates to your local repository.
+
+---
+
+### **1. `git fetch`**
+
+- **What It Does**: 
+  - `git fetch` downloads the latest changes (commits, branches, tags, etc.) from the remote repository **without modifying your working directory or current branch**. It only updates the local reference to the remote repository (often called `origin`).
+  - The fetched changes are available in your local repository but remain in a separate area, not merged into your current branch yet.
+
+- **Use Case**:
+  - You want to check for any changes in the remote repository without merging them immediately into your local branch.
+  - Allows you to review changes **before** integrating them into your local branch.
+
+- **Command Example**:
+  ```bash
+  git fetch origin
+  ```
+
+- **After `git fetch`**:
+  - You can inspect the changes fetched using commands like:
+    ```bash
+    git log origin/main
+    ```
+  - If you decide to merge the changes later:
+    ```bash
+    git merge origin/main
+    ```
+
+---
+
+### **2. `git pull`**
+
+- **What It Does**: 
+  - `git pull` is essentially a combination of `git fetch` and `git merge`. It **downloads the changes** from the remote repository (like `git fetch`), and then **immediately merges** those changes into your current branch.
+  - It automatically applies the changes from the remote branch to your working directory.
+
+- **Use Case**:
+  - You want to **quickly bring your local branch up to date** with the remote branch, and you’re okay with immediately merging the changes.
+  - Useful when you are collaborating on a shared branch and need to stay synced with others.
+
+- **Command Example**:
+  ```bash
+  git pull origin main
+  ```
+
+- **What Happens After `git pull`**:
+  - Your local branch is updated with any new commits from the remote.
+  - If there are merge conflicts between your local changes and the pulled changes, you’ll need to resolve them.
+
+---
+
+### **Key Differences Between `git fetch` and `git pull`**
+
+| **Aspect**                | **`git fetch`**                                   | **`git pull`**                                  |
+|---------------------------|--------------------------------------------------|-------------------------------------------------|
+| **Effect on Working Directory** | Does **not modify** your working directory or branch. Changes are only downloaded. | **Immediately merges** changes into your working directory and branch. |
+| **Command Composition**    | Only downloads updates from the remote.          | Combines `git fetch` + `git merge` (or `git rebase`). |
+| **When to Use**            | When you want to review changes before merging them. | When you want to quickly update your branch with the latest changes. |
+| **Risk of Conflicts**      | No conflict risk, since no changes are applied.  | Can cause merge conflicts if your local branch has diverged from the remote. |
+| **Control**                | More control over when to merge changes into your branch. | Less control; merges changes immediately after fetching. |
+| **Typical Workflow**       | Fetch, inspect, then merge manually if needed.   | Automatically fetch and merge in one step. |
+
+---
+
+### **Example Scenario**
+
+- **Using `git fetch`:**
+  - If you want to **see what’s new** in the remote branch without updating your working directory:
+    1. Fetch the latest changes:
+       ```bash
+       git fetch origin main
+       ```
+    2. Check the log to inspect the new commits:
+       ```bash
+       git log origin/main
+       ```
+    3. Decide if/when to merge the changes:
+       ```bash
+       git merge origin/main
+       ```
+
+- **Using `git pull`:**
+  - If you are collaborating on the `main` branch and want to **quickly bring your local copy up to date**:
+    1. Run `git pull`, which both fetches and merges:
+       ```bash
+       git pull origin main
+       ```
+    2. If no conflicts exist, your branch will now include the latest changes from `origin/main`. If there are conflicts, you’ll need to resolve them before completing the merge.
+
+---
+
+### **Conclusion**:
+- **`git fetch`** gives you more control by downloading changes but not merging them automatically, allowing you to inspect and decide when to integrate those changes.
+- **`git pull`** is more direct, fetching and merging the changes in one command, making it faster but with less flexibility in conflict management.
