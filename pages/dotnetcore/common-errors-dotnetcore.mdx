@@ -1,0 +1,105 @@
+### Common Errors and Its Solution
+.NET Core applications, like any other development environment, are prone to common errors. Below are some frequent issues and their solutions:
+
+### 1. **NullReferenceException**
+   **Error**: Attempting to access an object that is null.
+   - **Cause**: Accessing a member on an object that hasn’t been initialized.
+   - **Solution**:
+     - Always check for null using conditional operators or `if` statements before accessing object properties.
+     - Use nullable reference types or `?.` (null-conditional operator) to avoid exceptions.
+     - Initialize objects properly in constructors or use dependency injection.
+
+### 2. **Unhandled Exception: System.IO.FileNotFoundException**
+   **Error**: The application fails to find a required file.
+   - **Cause**: Incorrect file path or missing file in deployment.
+   - **Solution**:
+     - Ensure the file exists at the specified path.
+     - Use relative paths or configuration files to manage file paths.
+     - If the file is part of the project, ensure it is marked as "Copy to Output Directory" in the file properties.
+
+### 3. **InvalidOperationException: Unable to resolve service**
+   **Error**: Dependency Injection (DI) fails to resolve a service.
+   - **Cause**: The service is not registered or improperly registered in the `Startup.cs` file.
+   - **Solution**:
+     - Ensure the service is registered in `Startup.cs` under the correct lifetime (`AddScoped`, `AddSingleton`, or `AddTransient`).
+     - Double-check the constructor parameters for the class that requires the service.
+
+### 4. **500 Internal Server Error**
+   **Error**: The server responds with a general error.
+   - **Cause**: This can occur due to various issues such as misconfigurations, missing middleware, or uncaught exceptions.
+   - **Solution**:
+     - Check the application logs to identify the root cause.
+     - Use proper error handling and exception logging mechanisms (e.g., `try-catch` blocks, logging libraries like Serilog).
+     - Implement a custom error page or middleware to provide more information on the error.
+
+### 5. **CORS (Cross-Origin Resource Sharing) Issues**
+   **Error**: Errors related to cross-origin requests, typically when calling APIs from a different domain.
+   - **Cause**: CORS not configured properly in the API.
+   - **Solution**:
+     - In `Startup.cs`, enable CORS in the `ConfigureServices` and `Configure` methods:
+       ```csharp
+       services.AddCors(options => {
+           options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+       });
+
+       app.UseCors("AllowAll");
+       ```
+     - Be specific in your CORS policy to avoid security vulnerabilities.
+
+### 6. **Entity Framework Core Errors**
+   **a. Migration Errors**
+   - **Error**: Issues when applying migrations, such as "No migrations were found" or "Multiple constructors accepting all given argument types were found."
+   - **Cause**: Either migrations haven’t been added or there are constructor issues in DbContext.
+   - **Solution**:
+     - Use the `Add-Migration` and `Update-Database` commands to manage migrations.
+     - Ensure that `DbContext` has a constructor accepting `DbContextOptions<T>`.
+
+   **b. Lazy Loading Errors**
+   - **Error**: Lazy loading throws exceptions if the related entity is not loaded.
+   - **Cause**: Lazy loading is not configured properly.
+   - **Solution**:
+     - Enable lazy loading by installing the `Microsoft.EntityFrameworkCore.Proxies` package and configuring it in `Startup.cs`:
+       ```csharp
+       services.AddDbContext<AppDbContext>(options =>
+           options.UseLazyLoadingProxies().UseSqlServer(connectionString));
+       ```
+
+### 7. **HTTP 404 Not Found**
+   **Error**: Resources such as pages or APIs cannot be found.
+   - **Cause**: Incorrect routing, missing route parameters, or controller/action not registered correctly.
+   - **Solution**:
+     - Ensure that correct routes are defined in controllers (use `[Route]` attributes).
+     - Check for typos in route URLs.
+     - For Razor pages, verify the `@page` directive in `.cshtml` files.
+
+### 8. **OutOfMemoryException**
+   **Error**: The application runs out of memory.
+   - **Cause**: Memory leaks, large object allocations, or long-lived objects in memory.
+   - **Solution**:
+     - Use memory profilers (e.g., JetBrains dotMemory, Visual Studio Diagnostic Tools) to identify memory leaks.
+     - Dispose of unmanaged resources properly by implementing `IDisposable`.
+     - Avoid holding references to large objects for long periods, and prefer streaming large files rather than loading them fully into memory.
+
+### 9. **Configuration Issues**
+   **Error**: Configuration settings are not being picked up, or the application crashes due to missing configuration keys.
+   - **Cause**: Incorrect or missing configuration files (`appsettings.json`, environment variables).
+   - **Solution**:
+     - Check the configuration files for missing or misspelled keys.
+     - Use the `IConfiguration` interface in your services to ensure settings are correctly injected.
+     - Set default values in case a configuration value is missing.
+
+### 10. **ASP.NET Core Middleware Order**
+   **Error**: Middleware components don’t behave as expected.
+   - **Cause**: Incorrect middleware order in `Startup.cs`.
+   - **Solution**:
+     - Ensure that middleware components like `UseRouting`, `UseAuthentication`, `UseAuthorization`, `UseCors`, etc., are placed in the correct order. For example:
+       ```csharp
+       app.UseRouting();
+       app.UseAuthentication();
+       app.UseAuthorization();
+       app.UseEndpoints(endpoints => {
+           endpoints.MapControllers();
+       });
+       ```
+
+By addressing these common errors with appropriate solutions, you can ensure a more stable and performant .NET Core application. These solutions are a starting point; debugging logs, profilers, and documentation should always be referenced when specific issues arise.

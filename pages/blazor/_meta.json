@@ -1,4 +1,5 @@
 {
   "index": "Introduction to Blazor" ,
-  "hosting":"Hosting Models"
+  "hosting":"Hosting Models",
+  "common-errors-blazor":"Common Errors & Solutions"
 }

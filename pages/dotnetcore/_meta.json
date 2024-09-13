@@ -21,5 +21,6 @@
      "razor-pages":"Razor Pages",
      "asynch-razor-pages":"Asynch Razor Pages",
      "asynch-database-operation":"Asynch Database Operations",
-     "testing-asynch-code":"Testing Asynch Code"
+     "testing-asynch-code":"Testing Asynch Code",
+     "common-errors-dotnetcore":"Common Errors & Solution"
 }

@@ -1,0 +1,91 @@
+### Common Errors & Its Solution in Blazor Application
+
+In Blazor .NET Core applications, developers can encounter various common errors during development. Below are some of the frequent issues along with potential solutions:
+
+### 1. **Component Not Rendering**
+   **Error**: Sometimes, components fail to render on the page.
+   - **Cause**: This can occur if the component is not registered correctly or if there is an issue with the routing.
+   - **Solution**:
+     - Ensure that the component is registered in the `@page` directive in the `.razor` file for routing.
+     - Check for missing namespaces and ensure the component is added to the right location in the `_Imports.razor` or `MainLayout.razor` file.
+
+### 2. **Data Binding Not Working**
+   **Error**: Two-way data binding (`@bind`) does not work as expected.
+   - **Cause**: The `@bind` directive must bind to a property, not a method, and use the proper value type.
+   - **Solution**:
+     - Ensure that the property you're binding to has both getter and setter methods.
+     - Make sure the types match between the property and the input element (e.g., binding a `DateTime` to a text input may require format handling).
+
+### 3. **Event Handling Not Working**
+   **Error**: Events like `onclick` or `oninput` don't trigger.
+   - **Cause**: If the handler method does not have the correct signature or if it is not referenced properly.
+   - **Solution**:
+     - Ensure the method signature for the event matches the expected type (e.g., `void MyMethod(MouseEventArgs e)` for `onclick`).
+     - Use `async Task` for asynchronous event handlers and ensure `await` is used properly for any async operations.
+
+### 4. **JavaScript Interop Errors**
+   **Error**: Errors when calling JavaScript from Blazor via `IJSRuntime`.
+   - **Cause**: This occurs if JavaScript methods or files are not loaded correctly or if the method signatures are mismatched.
+   - **Solution**:
+     - Ensure that the JavaScript file is referenced correctly in the `wwwroot` folder.
+     - Use `InvokeAsync<T>` with the correct method signature in JavaScript. For example, ensure the return type in JavaScript matches the expected C# type.
+
+### 5. **NullReferenceException in Dependency Injection**
+   **Error**: Services injected using Dependency Injection (DI) are null.
+   - **Cause**: The service might not be registered in the correct `Startup.cs` method.
+   - **Solution**:
+     - Ensure the service is registered in the `ConfigureServices` method in `Startup.cs` using `AddSingleton`, `AddScoped`, or `AddTransient`, depending on the scope.
+     - Check if you're injecting the correct service in the component or service class.
+
+### 6. **Static Files Not Loading**
+   **Error**: Static files like CSS or JS files are not loading.
+   - **Cause**: This typically occurs if the static files are not in the correct folder or the `UseStaticFiles` middleware is not configured.
+   - **Solution**:
+     - Ensure that static files (like JS and CSS) are in the `wwwroot` folder.
+     - In `Startup.cs`, confirm that the `app.UseStaticFiles()` middleware is present in the `Configure` method.
+
+### 7. **SignalR Connection Issues**
+   **Error**: Issues with real-time communication via SignalR in Blazor.
+   - **Cause**: This can be due to CORS issues or incorrect SignalR configuration.
+   - **Solution**:
+     - Ensure that the SignalR server is properly configured in `Startup.cs` with `app.UseSignalR()`.
+     - If hosted on a different domain, configure CORS to allow communication.
+
+### 8. **Component Lifecycle Issues**
+   **Error**: Component lifecycle methods like `OnInitialized` or `OnParametersSet` don’t behave as expected.
+   - **Cause**: Misunderstanding of when lifecycle methods are triggered or improper handling of asynchronous tasks.
+   - **Solution**:
+     - Review the [component lifecycle](https://docs.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-6.0) documentation to understand the appropriate lifecycle events.
+     - Use `async Task` for lifecycle methods and `await` for asynchronous calls to avoid race conditions.
+
+### 9. **HTTP Client Errors (404, 500)**
+   **Error**: Errors when calling APIs using `HttpClient`.
+   - **Cause**: Issues like incorrect API endpoints, authentication problems, or CORS issues.
+   - **Solution**:
+     - Verify the API URL and ensure the backend is running.
+     - Check if CORS is properly configured on the API server.
+     - Use appropriate error handling (`try-catch`) around API calls, and handle different response codes like `404` (Not Found) or `500` (Internal Server Error).
+
+### 10. **Circular Dependency in DI**
+   **Error**: Circular dependency detected during Dependency Injection.
+   - **Cause**: When two or more services depend on each other, leading to an infinite loop.
+   - **Solution**:
+     - Refactor the dependencies so that circular dependencies are avoided.
+     - Consider breaking the dependency by using interfaces or introducing a factory pattern to resolve the services.
+
+### 11. **Slow Load Times Due to Large DLLs**
+   **Error**: The Blazor WebAssembly app has slow initial load times due to large DLLs being downloaded.
+   - **Cause**: Blazor WebAssembly applications load .NET DLLs, which can be large.
+   - **Solution**:
+     - Enable Ahead-Of-Time (AOT) compilation to reduce the size of the application.
+     - Minify and compress static assets.
+     - Implement lazy loading of assemblies.
+
+### 12. **Hot Reload Not Working (Blazor Server)**
+   **Error**: Changes are not reflected when using Hot Reload.
+   - **Cause**: Blazor Server apps sometimes do not trigger hot reload due to misconfigurations or file locking.
+   - **Solution**:
+     - Ensure Hot Reload is enabled in the IDE (Visual Studio or VS Code).
+     - Make sure that the `Server` project is running, and review any potential errors in the console that might prevent Hot Reload from working.
+
+These solutions address some of the most common issues developers face while working with Blazor .NET Core applications.
