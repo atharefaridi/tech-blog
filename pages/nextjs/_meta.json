@@ -1,0 +1,9 @@
+{
+    "index":"Basic FAQs",
+    "intermediate-faqs-nextjs":"Intermediate FAQs",
+    "advanced-faqs-nextjs":"Advanced FAQs",
+    "middleware-nextjs":"Middleware in NextJS",
+    "ssr-vs-isr":"SSR vs ISR",
+    "getStaticProps-vs-getServerSideProps":"getStaticProps VS getServerSideProps"
+   
+}

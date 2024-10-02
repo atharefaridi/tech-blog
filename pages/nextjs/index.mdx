@@ -1,0 +1,288 @@
+Here’s a set of basic **Next.js** interview questions, along with answers and examples. I’ll also try to incorporate some Unicode symbols and diagrams for clarity.
+
+### 1. **What is Next.js?**
+   - **Answer**: 
+     Next.js is a **React framework** used to build server-rendered React applications with features like static site generation (SSG), server-side rendering (SSR), and incremental static regeneration (ISR). It simplifies routing and offers performance optimizations out of the box.
+
+   - **Example**:
+     ```bash
+     npx create-next-app my-next-app
+     ```
+     This command creates a new Next.js application.
+
+   - 🔧 **Key Features**: ⚙️
+     - **SSG**: Static Site Generation
+     - **SSR**: Server-Side Rendering
+     - **ISR**: Incremental Static Regeneration
+
+---
+
+### 2. **What are the core features of Next.js?**
+   - **Answer**: 
+     - 📦 **File-based routing**: Automatic routing based on files inside the `pages/` directory.
+     - 🛠 **SSR (Server-Side Rendering)**: Pages are rendered on the server.
+     - 📄 **SSG (Static Site Generation)**: Pages are pre-rendered at build time.
+     - ♻️ **API routes**: You can create API endpoints directly within the `pages/api` directory.
+
+   - **Example**:
+     ```plaintext
+     pages/
+     ├── index.js      // Route: /
+     └── about.js      // Route: /about
+     ```
+
+---
+
+### 3. **What is Server-Side Rendering (SSR) in Next.js?**
+   - **Answer**: 
+     SSR generates HTML for each request at runtime (on the server). This allows for dynamic data fetching on each request.
+
+   - **Example**:
+     ```javascript
+     export async function getServerSideProps() {
+       // Fetch data from an API
+       const res = await fetch('https://api.example.com/data');
+       const data = await res.json();
+
+       return { props: { data } };
+     }
+
+     function Page({ data }) {
+       return <div>{data.message}</div>;
+     }
+     
+     export default Page;
+     ```
+     This code fetches data at runtime on every request.
+
+   - ⚙️ **Rendering Time**:
+     ```plaintext
+     Request → Server → Fetch Data → Generate HTML → Response
+     ```
+
+---
+
+### 4. **What is Static Site Generation (SSG) in Next.js?**
+   - **Answer**: 
+     SSG generates the HTML during the build process, so the page is static and doesn't need to be generated for each request. It’s faster than SSR since the page is served from a CDN or cache.
+
+   - **Example**:
+     ```javascript
+     export async function getStaticProps() {
+       const res = await fetch('https://api.example.com/data');
+       const data = await res.json();
+
+       return { props: { data } };
+     }
+
+     function Page({ data }) {
+       return <div>{data.message}</div>;
+     }
+     
+     export default Page;
+     ```
+     The page is generated at build time and served statically.
+
+   - 🔄 **Rendering Time**:
+     ```plaintext
+     Build Time → Fetch Data → Generate HTML → Serve from CDN
+     ```
+
+---
+
+### 5. **What is Incremental Static Regeneration (ISR) in Next.js?**
+   - **Answer**: 
+     ISR allows you to update static content after the build. You can specify a revalidation time to update static pages periodically.
+
+   - **Example**:
+     ```javascript
+     export async function getStaticProps() {
+       const res = await fetch('https://api.example.com/data');
+       const data = await res.json();
+
+       return {
+         props: { data },
+         revalidate: 60, // Rebuild the page every 60 seconds
+       };
+     }
+     ```
+
+---
+
+### 6. **How does routing work in Next.js?**
+   - **Answer**: 
+     Next.js uses a **file-based routing system**. Each file in the `pages/` directory becomes a route.
+
+   - **Example**:
+     ```
+     pages/
+     ├── index.js  // Route: /
+     ├── about.js  // Route: /about
+     └── blog/
+         └── [id].js  // Route: /blog/:id
+     ```
+
+   - **Dynamic Routing**:
+     ```javascript
+     import { useRouter } from 'next/router';
+
+     function BlogPost() {
+       const router = useRouter();
+       const { id } = router.query;
+
+       return <p>Post: {id}</p>;
+     }
+
+     export default BlogPost;
+     ```
+     This creates a dynamic route that responds to URLs like `/blog/1`.
+
+---
+
+### 7. **What is `getStaticProps` in Next.js?**
+   - **Answer**: 
+     `getStaticProps` is a Next.js function used in SSG to fetch data at build time.
+
+   - **Example**:
+     ```javascript
+     export async function getStaticProps() {
+       const res = await fetch('https://api.example.com/data');
+       const data = await res.json();
+
+       return { props: { data } };
+     }
+
+     function Page({ data }) {
+       return <div>{data.message}</div>;
+     }
+     
+     export default Page;
+     ```
+
+---
+
+### 8. **What is `getServerSideProps` in Next.js?**
+   - **Answer**: 
+     `getServerSideProps` is used in SSR to fetch data on each request at runtime.
+
+   - **Example**:
+     ```javascript
+     export async function getServerSideProps() {
+       const res = await fetch('https://api.example.com/data');
+       const data = await res.json();
+
+       return { props: { data } };
+     }
+
+     function Page({ data }) {
+       return <div>{data.message}</div>;
+     }
+     
+     export default Page;
+     ```
+
+---
+
+### 9. **What is `getStaticPaths` in Next.js?**
+   - **Answer**: 
+     `getStaticPaths` is used with dynamic routes and `getStaticProps` to pre-render pages with dynamic content at build time.
+
+   - **Example**:
+     ```javascript
+     export async function getStaticPaths() {
+       // Fetch the list of posts
+       const res = await fetch('https://api.example.com/posts');
+       const posts = await res.json();
+
+       // Generate paths for each post
+       const paths = posts.map((post) => ({
+         params: { id: post.id },
+       }));
+
+       return { paths, fallback: false };
+     }
+
+     export async function getStaticProps({ params }) {
+       const res = await fetch(`https://api.example.com/posts/${params.id}`);
+       const post = await res.json();
+
+       return { props: { post } };
+     }
+     ```
+
+---
+
+### 10. **What is the `Link` component in Next.js?**
+   - **Answer**: 
+     The `Link` component is used for client-side navigation between routes in Next.js, allowing for fast page transitions without a full page reload.
+
+   - **Example**:
+     ```javascript
+     import Link from 'next/link';
+
+     function Home() {
+       return (
+         <div>
+           <h1>Home Page</h1>
+           <Link href="/about">
+             <a>Go to About Page</a>
+           </Link>
+         </div>
+       );
+     }
+
+     export default Home;
+     ```
+
+---
+
+### 11. **What is API Routing in Next.js?**
+   - **Answer**: 
+     Next.js allows you to create API endpoints using the `pages/api/` directory. Each file in this folder is mapped to a corresponding API endpoint.
+
+   - **Example**:
+     ```javascript
+     // pages/api/hello.js
+     export default function handler(req, res) {
+       res.status(200).json({ message: 'Hello, World!' });
+     }
+     ```
+     When visiting `/api/hello`, this will return a JSON response: `{ message: "Hello, World!" }`.
+
+---
+
+### 12. **What is the purpose of `_app.js` in Next.js?**
+   - **Answer**: 
+     The `_app.js` file in Next.js allows you to override the default App component. It’s used to initialize pages, add global styles, or maintain state between pages.
+
+   - **Example**:
+     ```javascript
+     // pages/_app.js
+     import '../styles/global.css';
+
+     export default function MyApp({ Component, pageProps }) {
+       return <Component {...pageProps} />;
+     }
+     ```
+
+---
+
+### 13. **What are environment variables in Next.js?**
+   - **Answer**: 
+     Environment variables in Next.js are used to store sensitive information like API keys or database URLs. They are stored in `.env` files.
+
+   - **Example**:
+     ```plaintext
+     // .env.local
+     NEXT_PUBLIC_API_URL=https://api.example.com
+     ```
+     Access in code:
+     ```javascript
+     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+     ```
+
+---
+
+### Conclusion
+
+These basic Next.js interview questions will help you understand the fundamentals of the framework. 

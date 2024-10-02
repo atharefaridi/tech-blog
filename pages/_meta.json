@@ -5,6 +5,7 @@
   "blazor": "Blazor",
   "advance-javascript": "Advanced JavaScript",
   "docker": "Docker",
+  "nextjs":"NextJS",
   "book_call": {
     "title": "Book a Call 🕒",
     "type": "page",
