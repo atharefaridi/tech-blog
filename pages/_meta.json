@@ -4,6 +4,7 @@
   "github": "GitHub",
   "blazor": "Blazor",
   "advance-javascript": "Advanced JavaScript",
+  "docker": "Docker",
   "book_call": {
     "title": "Book a Call 🕒",
     "type": "page",

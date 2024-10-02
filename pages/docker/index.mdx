@@ -1,0 +1,107 @@
+When preparing for a Docker-related interview, you can expect some fundamental questions that assess your understanding of containerization and how Docker works. Below are some of the most basic and commonly asked interview questions for Docker:
+
+### 1. **What is Docker?**
+   - **Answer**: Docker is an open-source platform that allows developers to automate the deployment of applications inside lightweight, portable containers. It isolates applications from the underlying infrastructure, ensuring that they run consistently across different environments.
+
+### 2. **What is a Docker container?**
+   - **Answer**: A Docker container is a lightweight, executable package that includes everything needed to run an application: code, runtime, libraries, environment variables, and configuration files. Containers are isolated but share the host system's kernel, making them more efficient than virtual machines.
+
+### 3. **What is the difference between Docker and a virtual machine (VM)?**
+   - **Answer**:
+     - **Docker**: Uses containerization, shares the host OS kernel, and is lightweight with faster startup times.
+     - **Virtual Machine**: Includes a full guest OS and its own kernel, which makes it heavier and slower to start compared to Docker.
+
+### 4. **What is Dockerfile?**
+   - **Answer**: A Dockerfile is a text file that contains a set of instructions to build a Docker image. It specifies the base image, environment setup, application code, dependencies, and commands to run inside the container.
+
+### 5. **What is a Docker image?**
+   - **Answer**: A Docker image is a lightweight, standalone, immutable file that contains the source code, libraries, dependencies, tools, and other files needed to run an application. It serves as a blueprint for containers, and you can create multiple containers from a single image.
+
+### 6. **How do you build a Docker image?**
+   - **Answer**: You can build a Docker image using the `docker build` command along with a Dockerfile. For example:  
+     ```bash
+     docker build -t my-image:tag .
+     ```
+     This will create an image named `my-image` with the specified `tag`.
+
+### 7. **What is the difference between `docker run` and `docker start`?**
+   - **Answer**:
+     - **`docker run`**: Creates and starts a new container based on an image.
+     - **`docker start`**: Starts an existing stopped container.
+
+### 8. **What is Docker Compose?**
+   - **Answer**: Docker Compose is a tool for defining and running multi-container Docker applications. It uses a YAML file to configure the application’s services, networks, and volumes. You can use `docker-compose up` to start all services with a single command.
+
+### 9. **What are Docker volumes?**
+   - **Answer**: Docker volumes are used to store data outside of the container’s filesystem, ensuring that the data persists even when the container is removed. Volumes are preferred over bind mounts when you need to persist and share data between containers or with the host system.
+
+### 10. **How do you check running containers?**
+   - **Answer**: You can use the `docker ps` command to list all running containers:
+     ```bash
+     docker ps
+     ```
+     To see all containers, including stopped ones, you can use:
+     ```bash
+     docker ps -a
+     ```
+
+### 11. **What is the purpose of `docker exec` command?**
+   - **Answer**: The `docker exec` command allows you to run commands inside a running container. For example, to open a bash shell in a running container, you can use:
+     ```bash
+     docker exec -it <container_id> /bin/bash
+     ```
+
+### 12. **What is the difference between `COPY` and `ADD` in Dockerfile?**
+   - **Answer**:
+     - **`COPY`**: Only copies files or directories from the host machine into the container.
+     - **`ADD`**: Does everything `COPY` does, but also supports URL downloads and automatically extracting compressed files (e.g., .tar files).
+
+### 13. **What are the basic components of Docker architecture?**
+   - **Answer**: The basic components are:
+     - **Docker Client**: The CLI that users interact with.
+     - **Docker Daemon**: Runs on the host machine and manages containers, images, networks, and storage volumes.
+     - **Docker Registry**: Stores Docker images (e.g., Docker Hub).
+     - **Docker Objects**: Containers, images, networks, volumes, etc.
+
+### 14. **What is a Docker Registry?**
+   - **Answer**: A Docker registry is a storage and content delivery system that holds Docker images. Docker Hub is the default public registry, but you can also set up private registries for your own use.
+
+### 15. **How do you remove a Docker container?**
+   - **Answer**: You can remove a Docker container using the `docker rm` command:
+     ```bash
+     docker rm <container_id>
+     ```
+     If you want to stop and remove it in one step, use:
+     ```bash
+     docker rm -f <container_id>
+     ```
+
+### 16. **How do you remove a Docker image?**
+   - **Answer**: You can remove a Docker image using the `docker rmi` command:
+     ```bash
+     docker rmi <image_id>
+     ```
+
+### 17. **How do you update a running container?**
+   - **Answer**: Docker containers are immutable, so to update a container, you need to:
+     - Stop and remove the current container.
+     - Build a new image with the necessary updates.
+     - Create and run a new container from the updated image.
+
+### 18. **What is the difference between Docker's bind mount and volume?**
+   - **Answer**:
+     - **Bind Mount**: Maps a file or directory on the host to the container, which can be located anywhere on the host.
+     - **Volume**: Managed by Docker and stored in Docker’s default location. Volumes are more secure and flexible for persistent data storage.
+
+### 19. **How do you scale services in Docker?**
+   - **Answer**: Using Docker Compose, you can scale services by adding the `--scale` flag to the `docker-compose up` command. For example:
+     ```bash
+     docker-compose up --scale web=3
+     ```
+     This will start 3 instances of the `web` service.
+
+### 20. **What is Docker Swarm?**
+   - **Answer**: Docker Swarm is Docker’s native orchestration tool that allows you to manage and deploy containers across multiple Docker hosts (nodes) in a cluster. It handles load balancing, service discovery, and scaling across different nodes.
+
+---
+

@@ -1,0 +1,8 @@
+{
+    "index": "Basic FAQs",
+    "intermediate":"Intermediate FAQs",
+    "advanced-faqs-docker":"Advanced FAQs",
+   "docker-vs-kubernetes": "Docker VS Kubernetes",
+   "common-errors-docker":"Common Errors and Solutions",
+   "security-practices-docker":"Security Practices"
+  }
