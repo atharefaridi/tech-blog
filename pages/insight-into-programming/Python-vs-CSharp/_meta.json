@@ -4,5 +4,7 @@
  "SyntaxVariableDeclaration":"Variable Declaration",
  "FunctionDeclaration":"Function Declaration",
  "ClassDeclaration":"Class Declaration",
- "AccessModifiers":"Access Modifiers"
+ "AccessModifiers":"Access Modifiers",
+ "IndentationAndBraces":"Indentation And Braces",
+ "ConstructorSyntax":"Constructor Syntax"
 }
