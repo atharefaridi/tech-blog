@@ -1,12 +1,14 @@
 {
-  "index": "Typescript-vs-C#",
+ "index": "Typescript-vs-C#",
+ "CompilationandRuntime":"Compilation and Runtime",
  "FunctionDeclarations": "Function Declarations"  ,
  "Classes":"Classes",
  "Interfaces":"Interfaces",
+"InheritenceAndPolymorphism":"Inheritence & Polymorphism",
+  "AsynchronousProgramming":"Asynchronous Programming",
  "ModulesAndNamespaces":"Modules & Namespaces",
  "Generics":"Generics",
  "Nullability":"Nullability",
  "AccessModifiers":"Access Modifiers",
- "InheritenceAndPolymorphism":"Inheritence & Polymorphism",
- "ErrorHandling":"Error Handling"
+ "ErrorHandling":"Error Handling" 
 }
