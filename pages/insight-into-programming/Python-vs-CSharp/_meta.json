@@ -6,5 +6,11 @@
  "ClassDeclaration":"Class Declaration",
  "AccessModifiers":"Access Modifiers",
  "IndentationAndBraces":"Indentation And Braces",
- "ConstructorSyntax":"Constructor Syntax"
+ "ConstructorSyntax":"Constructor Syntax",
+ "Inheritance":"Inheritance",
+ "MethodOverriding":"Method Overriding",
+ "ExceptionHandling":"Exception Handling",
+ "Properties":"Properties",
+ "CompilationAndExecution":"Compilation And Execution"
+ 
 }
