@@ -387,9 +387,33 @@ C# supports **sealed classes**, which prevent further inheritance. This is usefu
 
 ---
 
+---
+
+### **Difference Table**
+
+| **Feature**                     | **TypeScript**                                                                 | **C#**                                                                 |
+|---------------------------------|--------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| **Class Foundation**            | Based on JavaScript ES6 classes, with type annotations.                        | Core to the .NET ecosystem, strongly typed and object-oriented.         |
+| **Access Modifiers**            | `public`, `private`, `protected`; enforced at compile-time only (erased in JS). | `public`, `private`, `protected`, `internal`; enforced at compile-time and runtime. |
+| **Constructor**                 | Standard constructor; parameter properties shorthand (`public name: string`).  | Standard constructor; no parameter properties shorthand.                |
+| **Static Constructor**          | Not supported; static properties initialized inline or in static methods.      | Supported with `static` constructor for initializing static members.    |
+| **Abstract Classes**            | Supported with `abstract` keyword; abstract methods defined without implementation. | Supported with `abstract` keyword; requires `override` in derived classes. |
+| **Sealed Classes**              | Not supported; all classes can be extended unless restricted via other means.  | Supported with `sealed` keyword to prevent inheritance.                 |
+| **Runtime Behavior**            | Types and access modifiers erased at runtime (JavaScript output).              | Types and access modifiers preserved at runtime (IL in .NET CLR).       |
+| **Property Declaration**        | Properties can be declared with type annotations; optional initialization.      | Properties typically use getters/setters or auto-implemented properties. |
+| **Inheritance**                 | Single inheritance; uses structural typing for polymorphism.                   | Single inheritance; uses nominal typing with `virtual`/`override` for polymorphism. |
+| **Example**                     | ```typescript<br>class Person {<br>  private name: string;<br>  constructor(name: string) { this.name = name; }<br>}<br>``` | ```csharp<br>public class Person<br>{<br>  private string name;<br>  public Person(string name) { this.name = name; }<br>}<br>``` |
+
+---
+
+
 ### **Summary**
 
 - **TypeScript** classes are lightweight, JavaScript-based, and designed for flexibility in web development. Access modifiers are compile-time only, and there’s no static constructor or sealed class support, reflecting JavaScript’s dynamic nature.
 - **C#** classes are robust, with strict runtime enforcement of access modifiers, support for static constructors, and features like sealed classes, tailored for the .NET ecosystem’s object-oriented, type-safe design.
 
 These differences make TypeScript suitable for dynamic, JavaScript-heavy environments, while C# excels in structured, enterprise-grade applications with strong runtime guarantees.
+
+
+
+

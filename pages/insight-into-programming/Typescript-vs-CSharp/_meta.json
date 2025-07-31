@@ -3,8 +3,10 @@
  "FunctionDeclarations": "Function Declarations"  ,
  "Classes":"Classes",
  "Interfaces":"Interfaces",
- "ModulesAndNamespaces":"Modules and Namespaces",
+ "ModulesAndNamespaces":"Modules & Namespaces",
  "Generics":"Generics",
  "Nullability":"Nullability",
- "AccessModifiers":"Access Modifiers"
+ "AccessModifiers":"Access Modifiers",
+ "InheritenceAndPolymorphism":"Inheritence & Polymorphism",
+ "ErrorHandling":"Error Handling"
 }

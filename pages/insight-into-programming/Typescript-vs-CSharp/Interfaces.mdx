@@ -457,6 +457,20 @@ C# interfaces are enforced at both compile-time and runtime, as they are part of
      ```
 
 ---
+| **Feature**                  | **TypeScript**                                                                 | **C#**                                                                 |
+|------------------------------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| **Purpose**                  | Defines object shapes using structural typing (duck typing).                   | Defines strict contracts using nominal typing.                         |
+| **Example**                  | `interface Person { name: string; age?: number; }`                            | `public interface IPerson { string Name { get; set; } int Age { get; set; } }` |
+| **Optional Members**          | Supports optional properties (e.g., `name?: string`).                         | No optional members; all members must be implemented.                  |
+| **Example**                  | `interface Employee { name: string; role?: string; }`                         | `public interface IWorker { string Name { get; set; } string Role { get; set; } }` |
+| **Declaration Merging**       | Supports merging multiple declarations of the same interface.                  | No declaration merging; interfaces are fixed definitions.              |
+| **Example**                  | `interface User { id: number; } interface User { name: string; }`             | Must use inheritance: `public interface IEmailUser : IUser { string Email { get; set; } }` |
+| **Supported Types**           | Can describe objects, functions, arrays, index signatures, etc.                | Limited to methods, properties, events, and indexers.                  |
+| **Example**                  | `interface GreetFunction { (name: string): string; }`                         | `public interface INotifiable { event EventHandler<string> NotificationSent; }` |
+| **Extending Interfaces**      | Supports `extends` for inheritance.                                            | Supports `:` for inheritance, requiring all members to be implemented. |
+| **Example**                  | `interface Pet extends Animal { name: string; }`                              | `public interface IPet : IAnimal { string Name { get; set; } }`        |
+| **Typing System**             | Structural typing: compatibility based on shape.                               | Nominal typing: compatibility based on explicit interface implementation. |
+| **Enforcement**               | Compile-time only; erased in JavaScript output.                                | Compile-time and runtime enforcement via .NET CLR.                     |
 
 ### **Summary**
 

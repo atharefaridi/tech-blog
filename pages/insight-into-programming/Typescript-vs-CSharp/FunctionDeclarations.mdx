@@ -273,4 +273,14 @@ C# uses the `params` keyword to allow a variable number of arguments, passed as 
    - **C#**: Methods are tightly coupled to classes/structs, reflecting .NET’s object-oriented design.
 
 ---
+# TypeScript vs C# Function Differences
+
+| Feature | TypeScript | C# |
+|---------|------------|----|
+| **Declaration Styles** | Supports `function` keyword, arrow functions (`=>`), and methods in objects/classes. Example: `function fn() {}`, `() => {}`, or `class C { fn() {} }`. | Methods are defined within classes or structs. No standalone functions (except top-level statements). Example: `class C { public void Fn() {} }`. |
+| **Optional Parameters** | Uses `?` for optional parameters, must be last (before rest parameters). Example: `function fn(x?: number)`. | Uses default values with `=`. Example: `void Fn(int x = 0)`. |
+| **Variable-Length Arguments** | Uses rest parameters with `...` (e.g., `...rest: number[]`). Example: `function sum(...nums: number[])`. | Uses `params` keyword (e.g., `params int[] nums`). Example: `int Sum(params int[] nums)`. |
+| **Function Overloading** | No true overloading; uses union types or signature declarations. Example: `function fn(a: string | number)`. | Supports true overloading with different parameter types/counts. Example: `void Fn(string s)`, `void Fn(int i)`. |
+| **Return Types** | Optional with type inference; supports `void`, `any`, union types. Example: `function fn(): string | number`. | Mandatory explicit return types; `void` for no return. Example: `string Fn()`. |
+| **Context** | Flexible, used in JavaScript environments (browser/Node.js). | Strictly object-oriented, tied to .NET classes/structs. |
 
