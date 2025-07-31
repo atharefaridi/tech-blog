@@ -1,5 +1,6 @@
 {
  "index": "Python-vs-C#",
- "TypingSystem":"Typing System"
-
+ "TypingSystem":"Typing System",
+ "SyntaxVariableDeclaration":"Variable Declaration",
+ "FunctionDeclaration":"Function Declaration"
 }
