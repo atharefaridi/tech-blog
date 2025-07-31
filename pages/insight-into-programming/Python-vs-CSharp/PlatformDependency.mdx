@@ -1,0 +1,67 @@
+Here’s a **pointwise explanation** of the statement regarding **platform dependency** in Python and C#, followed by a **comparison table**:
+
+---
+
+## 🐍 Python: Cross-Platform & Highly Portable
+
+1. **Interpreted Language**:
+   - Python runs on any system with a compatible interpreter (Windows, macOS, Linux, etc.).
+
+2. **Write Once, Run Anywhere**:
+   - Python code typically requires **no modification** to run across platforms.
+
+3. **Minimal Dependencies**:
+   - Many Python scripts can run with just the standard library.
+   - External packages are managed via `pip`, which works across platforms.
+
+4. **Use Cases**:
+   - Widely used in **data science**, **web development**, **automation**, and **scripting** across OSes.
+
+5. **Example**:
+   ```python
+   import platform
+   print("Running on:", platform.system())
+   ```
+
+   This will print the OS name, and the same script runs on Windows, Linux, or macOS.
+
+---
+
+## 💻 C#: Tied to .NET, Improved with .NET Core/.NET 5+
+
+1. **Traditionally Windows-Centric**:
+   - C# was originally built for the **.NET Framework**, which was Windows-only.
+
+2. **.NET Core and .NET 5+**:
+   - Introduced **cross-platform support** (Windows, Linux, macOS).
+   - Still requires the **.NET runtime** to be installed on the target system.
+
+3. **Compilation Dependency**:
+   - C# code must be compiled, and the compiled binaries are platform-specific unless built with cross-platform targets.
+
+4. **Use Cases**:
+   - Common in **enterprise applications**, **desktop apps**, **web APIs**, and **game development** (Unity).
+
+5. **Example**:
+   ```csharp
+   Console.WriteLine("Running on: " + System.Runtime.InteropServices.RuntimeInformation.OSDescription);
+   ```
+
+   This prints the OS description, but requires the .NET runtime to execute.
+
+---
+
+## 🆚 Difference Table: Python vs. C# Platform Dependency
+
+| Feature                        | Python                                      | C# (.NET)                                      |
+|-------------------------------|---------------------------------------------|------------------------------------------------|
+| **Platform Support**          | Fully cross-platform                        | Cross-platform with .NET Core/.NET 5+          |
+| **Runtime Requirement**       | Python interpreter                          | .NET runtime                                   |
+| **Compilation**               | Interpreted                                 | Compiled                                       |
+| **Portability**               | High (same code runs on all OSes)           | Medium (requires platform-specific builds)     |
+| **Dependency Management**     | `pip`, virtual environments                 | NuGet, project files                           |
+| **Initial Design**            | Platform-agnostic                           | Windows-centric (evolved to cross-platform)    |
+| **Example Use Cases**         | Scripting, automation, data science         | Enterprise apps, web APIs, game development    |
+
+---
+

@@ -11,6 +11,8 @@
  "MethodOverriding":"Method Overriding",
  "ExceptionHandling":"Exception Handling",
  "Properties":"Properties",
- "CompilationAndExecution":"Compilation And Execution"
- 
+ "CompilationAndExecution":"Compilation And Execution",
+ "NullHandling":"Null Handling" ,
+ "TypeHints":"Type Hints vs. Strict Typing",
+ "PlatformDependency":"Platform Dependency"
 }
