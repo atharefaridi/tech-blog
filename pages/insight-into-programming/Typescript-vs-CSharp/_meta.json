@@ -4,5 +4,7 @@
  "Classes":"Classes",
  "Interfaces":"Interfaces",
  "ModulesAndNamespaces":"Modules and Namespaces",
- "Generics":"Generics"
+ "Generics":"Generics",
+ "Nullability":"Nullability",
+ "AccessModifiers":"Access Modifiers"
 }
