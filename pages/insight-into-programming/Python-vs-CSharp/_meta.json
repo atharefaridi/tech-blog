@@ -2,5 +2,7 @@
  "index": "Python-vs-C#",
  "TypingSystem":"Typing System",
  "SyntaxVariableDeclaration":"Variable Declaration",
- "FunctionDeclaration":"Function Declaration"
+ "FunctionDeclaration":"Function Declaration",
+ "ClassDeclaration":"Class Declaration",
+ "AccessModifiers":"Access Modifiers"
 }
