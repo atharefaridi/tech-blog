@@ -1,0 +1,16 @@
+{
+ "index": "Golang-vs-CSharp",
+ "LanguageDesignPhilosophy":"Language Design Philosophy",
+ "VariableDeclaration":"Variable Declaration",
+  "Function":"Function Declaration",
+  "ClassesAndStructs":"Classes and Structs",
+  "Interfaces":"Interfaces",
+ "ErrorHandling":"Error Handling",
+ "Generics":"Generics",
+ "MemoryManagement":"Memory Management",
+ "AccessModifiers":"Access Modifiers",
+ "concurrency":"Concurrency",
+ "PackagesAndNamespaces":"Packages and Namespaces",
+ "TypeSystem":"Type System",
+ "toolsAndEcosystem":"Tools and Ecosystem"
+}
