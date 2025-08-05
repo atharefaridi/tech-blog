@@ -8,6 +8,7 @@
   "docker": "Docker",
   "nextjs":"NextJS",
   "Portuguese":"Learning Portuguese",
+  "golang": "Introduction to Golang",
   "book_call": {
     "title": "Book a Call 🕒",
     "type": "page",
